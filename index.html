@@ -14,13 +14,14 @@
 <title>Prophet, Priest &amp; King</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 :root{
   --bg:#F4F5F8;--surface:#FFFFFF;--ink:#1A1D2B;--muted:#596078;--line:#DADDE7;
   --blue:#2A5595;--scarlet:#A8322E;--purple:#653A8C;--gold:#936A12;
   --acc:var(--gold);
   --serif:"Cormorant Garamond",Garamond,"Times New Roman",serif;
+  --read:"Source Serif 4",Georgia,"Times New Roman",serif;
   --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   color-scheme:light;
 }
@@ -98,6 +99,38 @@ header{display:grid;gap:10px;margin-bottom:28px}
 .mvref{font-size:.82rem;color:var(--muted);margin-top:4px}
 .done{margin:0 24px 24px;display:flex;align-items:center;gap:10px;width:calc(100% - 48px);justify-content:center;padding:12px;border-radius:10px;border:1.5px dashed color-mix(in srgb,var(--acc) 55%,var(--line));background:transparent;cursor:pointer;font-weight:600;color:var(--acc)}
 .done.on{border-style:solid;background:var(--acc);color:var(--surface)}
+
+
+/* scripture reader */
+.scripture{display:grid;gap:12px}
+.vers{display:flex;flex-wrap:wrap;gap:6px}
+.vers button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:.8rem;font-weight:600;letter-spacing:.04em;cursor:pointer;color:var(--muted)}
+.vers button:hover{border-color:var(--acc);color:var(--ink)}
+.vers button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:var(--surface)}
+.vname{font-size:.8rem;color:var(--muted);margin:0}
+.text{font-family:var(--read);font-size:1.06rem;line-height:1.75;max-width:66ch;border-left:2px solid color-mix(in srgb,var(--acc) 35%,var(--line));padding-left:16px}
+.text p{margin:0 0 .6em}
+.text h4{font-family:var(--sans);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:1em 0 .3em;font-weight:600}
+.text h4:first-child{margin-top:0}
+.text sup{font-family:var(--sans);font-size:.62em;font-weight:600;color:var(--acc);margin-right:3px;vertical-align:.45em;font-variant-numeric:tabular-nums}
+.text .loading{color:var(--muted);font-family:var(--sans);font-size:.9rem}
+.online{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;font-size:.82rem;color:var(--muted)}
+.online a{color:var(--acc);font-weight:600;text-decoration:none;padding:2px 0}
+.online a:hover{text-decoration:underline}
+.openin{display:grid;gap:10px;background:color-mix(in srgb,var(--acc) 7%,var(--surface));border-radius:10px;padding:14px 16px}
+.openin p{margin:0;font-size:.9rem;max-width:62ch}
+.openbtns{display:flex;flex-wrap:wrap;gap:8px}
+.openbtn{display:inline-block;background:var(--acc);color:var(--surface);text-decoration:none;font-weight:600;font-size:.9rem;padding:10px 14px;border-radius:8px}
+.openbtn:hover{filter:brightness(1.08)}
+.openin .alt{font-size:.82rem;color:var(--muted)}
+.openin .alt a{color:var(--acc);font-weight:600}
+.vers .net{font-weight:500;opacity:.8}
+.openpref{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.82rem;color:var(--muted)}
+.openpref button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 10px;font-size:.78rem;cursor:pointer;color:var(--muted)}
+.openpref button[aria-pressed="true"]{border-color:var(--acc);color:var(--acc);font-weight:600}
+.steps{margin:0;padding-left:1.3em;display:grid;gap:6px;font-size:.9rem}
+button.openbtn{border:0;cursor:pointer;font:inherit;font-weight:600;font-size:.9rem}
+.textctl{background:none;border:0;padding:0;color:var(--muted);font-size:.8rem;cursor:pointer;text-decoration:underline;justify-self:start}
 
 /* side */
 aside{display:grid;gap:20px}
@@ -231,7 +264,10 @@ footer{margin-top:40px;color:var(--muted);font-size:.82rem;max-width:72ch}
         <li>Don't try to catch up everything. Pick up at today's reading.</li>
         <li>If you like, read the missed passage on Sunday afternoon.</li>
         <li>Grace, not guilt. The goal is knowing Christ, not a perfect streak.</li>
-        <li>Use any translation your family reads. Memory verses here are quoted from the King James Version, which is in the public domain.</li>
+        <li>Five public-domain Bibles are built in and work offline: KJV, WEB, ASV, BBE and YLT. Tap a version above the reading to switch; the app remembers your choice.</li>
+        <li>NLT and AMP are on the version bar too. They are copyrighted, so tapping them gives you a one-tap link to the day's passage in the YouVersion Bible app or your browser, with the World English Bible shown underneath for offline reading.</li>
+        <li>NIV, ESV, NKJV and NASB open online at BibleGateway.</li>
+        <li>Memory verses are quoted from the KJV.</li>
       </ul>
     </div>
   </div>
@@ -239,8 +275,7 @@ footer{margin-top:40px;color:var(--muted);font-size:.82rem;max-width:72ch}
 
 <footer>The colours follow the tabernacle veil, woven of blue, purple and scarlet (Exodus 26:31): blue for the Prophet, scarlet for the Priest, purple for the King, and gold, from the ark and mercy seat, for the weeks that gather all three. Your checkmarks are saved on this device.</footer>
 </div>
-<script>
-const W=[
+<script>const W=[
 {p:"found",t:"The Anointed One: Why Three Offices?",s:"“Christ” means Anointed One. Israel anointed three kinds of servants: prophets, priests and kings. Jesus fulfils all three.",mv:["Luke 4:18a","The Spirit of the Lord is upon me, because he hath anointed me to preach the gospel to the poor;"],live:"Each time you pray this week, begin with “Jesus, my Prophet, Priest and King.”",
 fam:{idea:"Jesus is the Christ, God's Anointed. He is our Prophet who tells us about God, our Priest who brings us to God, and our King who rules us for God.",q:["What does the name “Christ” mean?","Which job of Jesus do you need most today: to learn, to be forgiven, or to be led?"],act:"Set out three props: a Bible or scroll (Prophet), a towel or robe (Priest) and a paper crown (King). Let each child hold one and say what Jesus does in that role. Dab a little olive oil on each hand as you pray."},
 d:[
@@ -862,16 +897,114 @@ function strip(){const tw=days[TODAY].wi,sw=days[sel].wi;
 $("strip").innerHTML=W.map((w,wi)=>`<button class="seg${wi<tw?" past":""}${wi===tw?" now":""}${wi===sw?" sel":""}" data-part="${w.p}" data-w="${wi}" title="Week ${wi+1}: ${w.t}" aria-label="Week ${wi+1}: ${w.t}"></button>`).join("");}
 $("strip").onclick=e=>{const b=e.target.closest(".seg");if(!b)return;const wi=+b.dataset.w;const idx=days.findIndex(d=>d.wi===wi);go(wi===days[TODAY].wi?TODAY:idx);};
 
+
+// ---- scripture reader ----
+// [code, chip label, description, YouVersion id for online-only versions]
+const VERSIONS=[["kjv","KJV","King James Version (1769 text)"],["web","WEB","World English Bible · modern English"],["nlt","NLT","New Living Translation",116],["amp","AMP","Amplified Bible",1588],["asv","ASV","American Standard Version (1901)"],["bbe","BBE","Bible in Basic English · simple words, good for children"],["ylt","YLT","Young's Literal Translation · word-for-word study"]];
+const ONLINE=[["NIV",111],["ESV",59],["NKJV",114],["NASB",100]];
+const USFM={"Genesis":"GEN","Exodus":"EXO","Leviticus":"LEV","Numbers":"NUM","Deuteronomy":"DEU","Joshua":"JOS","Judges":"JDG","Ruth":"RUT","1 Samuel":"1SA","2 Samuel":"2SA","1 Kings":"1KI","2 Kings":"2KI","1 Chronicles":"1CH","2 Chronicles":"2CH","Ezra":"EZR","Nehemiah":"NEH","Esther":"EST","Job":"JOB","Psalm":"PSA","Psalms":"PSA","Proverbs":"PRO","Ecclesiastes":"ECC","Song of Solomon":"SNG","Isaiah":"ISA","Jeremiah":"JER","Lamentations":"LAM","Ezekiel":"EZK","Daniel":"DAN","Hosea":"HOS","Joel":"JOL","Amos":"AMO","Obadiah":"OBA","Jonah":"JON","Micah":"MIC","Nahum":"NAM","Habakkuk":"HAB","Zephaniah":"ZEP","Haggai":"HAG","Zechariah":"ZEC","Malachi":"MAL","Matthew":"MAT","Mark":"MRK","Luke":"LUK","John":"JHN","Acts":"ACT","Romans":"ROM","1 Corinthians":"1CO","2 Corinthians":"2CO","Galatians":"GAL","Ephesians":"EPH","Philippians":"PHP","Colossians":"COL","1 Thessalonians":"1TH","2 Thessalonians":"2TH","1 Timothy":"1TI","2 Timothy":"2TI","Titus":"TIT","Philemon":"PHM","Hebrews":"HEB","James":"JAS","1 Peter":"1PE","2 Peter":"2PE","1 John":"1JN","2 John":"2JN","3 John":"3JN","Jude":"JUD","Revelation":"REV"};
+let ver="kjv";try{const v=localStorage.getItem("ppk-ver");if(v&&VERSIONS.some(x=>x[0]===v))ver=v;}catch(e){}
+let showText=true;try{showText=localStorage.getItem("ppk-hide")!=="1";}catch(e){}
+const BIB={},LOADING={};
+function loadVer(code){if(BIB[code])return Promise.resolve(BIB[code]);if(!LOADING[code])LOADING[code]=fetch("bible/"+code+".json").then(r=>{if(!r.ok)throw 0;return r.json();}).then(j=>(BIB[code]=j)).catch(e=>{delete LOADING[code];throw e;});return LOADING[code];}
+const isRef=r=>r&&!/^Review/.test(r);
+const vInfo=()=>VERSIONS.find(x=>x[0]===ver);
+const textCode=()=>vInfo()[3]?"web":ver; // online-only versions show WEB as the offline text
+// Split "Exodus 4:10–16; 7:1–2" into [{label, usfm}] for YouVersion links
+function yvSegments(ref){let book=null;return ref.split(";").map(x=>x.trim()).filter(Boolean).map(seg=>{
+  const m=seg.match(/^((?:[123] )?[A-Za-z][A-Za-z ]*?)\s+(\d.*)$/);let rest=seg;if(m){book=m[1];rest=m[2];}
+  const code=USFM[book];let path;
+  const simple=rest.match(/^(\d+):(\d+)(?:–(\d+))?$/), whole=rest.match(/^(\d+)$/);
+  if(simple)path=`${simple[1]}.${simple[2]}${simple[3]?"-"+simple[3]:""}`;else if(whole)path=whole[1];else path=rest.match(/^(\d+)/)[1];
+  return {label:(m?seg:book+" "+seg),usfm:`${code}.${path}`};});}
+function scriptureHTML(ref){
+  const vn=vInfo();
+  const gw="https://www.biblegateway.com/passage/?search="+encodeURIComponent(ref.replace(/–/g,"-"))+"&version=";
+  let online="";
+  if(vn[3]){const segs=yvSegments(ref);
+    online=`<div class="openin"><p>${vn[1]} is copyrighted, so its text can't be stored in this app. Tap to read ${segs.length>1?"each part of ":""}today's passage in ${vn[1]}.</p>
+<div class="openbtns">${segs.map((g,i)=>`<a class="openbtn yv" data-seg="${i}" data-vid="${vn[3]}" data-abbr="${vn[1]}" href="https://www.bible.com/bible/${vn[3]}/${g.usfm}.${vn[1]}" target="_blank" rel="noopener">Read ${g.label} in ${vn[1]} ↗</a>`).join("")}</div>
+${openPref()}
+<p class="alt" id="yvmsg" hidden></p>
+<p class="alt">Or read it on <a href="${gw+vn[1]}" target="_blank" rel="noopener">BibleGateway (${vn[1]})</a>.</p></div>`;}
+  const tc=VERSIONS.find(x=>x[0]===textCode());
+  return `<div class="scripture" id="scripture"><div class="vers" role="group" aria-label="Bible version">${VERSIONS.map(v=>`<button data-v="${v[0]}" aria-pressed="${v[0]===ver}">${v[1]}${v[3]?'<span class="net" aria-label="online"> ↗</span>':""}</button>`).join("")}</div>
+<p class="vname">${vn[2]}${vn[3]?" · opens online":" · saved for offline"}</p>
+${online}
+${kjvAppHTML(ref)}
+${showText?`${vn[3]?`<p class="vname">Offline text below: ${tc[2].split(" · ")[0]}</p>`:""}<div class="text" id="stext"><span class="loading">Loading ${tc[1]}…</span></div>`:""}
+<button class="textctl" id="stoggle">${showText?"Hide Bible text":"Show Bible text"}</button>
+<div class="online"><span>Also read in:</span>${ONLINE.map(([o,id])=>`<a class="yv" data-seg="all" data-vid="${id}" data-abbr="${o}" href="${gw+o}" target="_blank" rel="noopener">${o}</a>`).join("")}</div>${vn[3]?"":openPref()}</div>`;
+}
+function fillText(ref){const el=document.getElementById("stext");if(!el)return;const want=textCode();
+  loadVer(want).then(j=>{if(want!==textCode()||!document.getElementById("stext"))return;const segs=j[ref];
+    if(!segs){el.innerHTML='<span class="loading">Text not available for this passage.</span>';return;}
+    const multi=segs.length>1;
+    el.innerHTML=segs.map(g=>{let lastC=null;const body=g.v.map(([c,v,t])=>{const lab=(lastC!==null&&c!==lastC)?c+":"+v:v;lastC=c;return `<sup>${lab}</sup>${t} `;}).join("");return (multi?`<h4>${g.h}</h4>`:"")+`<p>${body}</p>`;}).join("");
+  }).catch(()=>{el.innerHTML='<span class="loading">Could not load this version. Open the app once while online so it can save the Bible text for offline use.</span>';});}
+
+// ---- open in the Bible app (YouVersion) ----
+let openWith="app";try{const o=localStorage.getItem("ppk-open");if(o==="web"||o==="app")openWith=o;}catch(e){}
+const isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+function openPref(){if(!isMobile)return "";return `<div class="openpref" role="group" aria-label="Open passages with">Open with: <button data-open="app" aria-pressed="${openWith==="app"}">Bible app</button><button data-open="web" aria-pressed="${openWith==="web"}">Browser</button></div>`;}
+// Every verse of the passage (or of one segment) as BOOK.c.v, from the saved KJV text
+function appRef(ref,seg){const segs=yvSegments(ref);const data=BIB.kjv&&BIB.kjv[ref];
+  const pick=seg==="all"?segs.map((_,i)=>i):[+seg];
+  return pick.map(i=>{const book=segs[i].usfm.split(".")[0];const vs=data&&data[i]?data[i].v:null;
+    return vs&&vs.length?vs.map(([c,v])=>`${book}.${c}.${v}`).join("+"):segs[i].usfm;}).join("+");}
+function tryApp(a,ref){const url=`youversion://bible?reference=${appRef(ref,a.dataset.seg)}&version_id=${a.dataset.vid}`;
+  const msg=document.getElementById("yvmsg");let left=false;const onHide=()=>{if(document.hidden)left=true;};
+  document.addEventListener("visibilitychange",onHide);window.location.href=url;
+  setTimeout(()=>{document.removeEventListener("visibilitychange",onHide);
+    if(!left&&!document.hidden){const m=msg||document.createElement("p");
+      m.hidden=false;m.className="alt";m.innerHTML=`The Bible app didn't open. It may not be installed. <a href="${a.href}" target="_blank" rel="noopener">Open ${a.dataset.abbr} in the browser instead</a>.`;
+      if(!msg)a.closest(".scripture").appendChild(m);}},1800);}
+function wireOpen(box,ref){
+  box.querySelectorAll(".openpref button").forEach(b=>b.onclick=()=>{openWith=b.dataset.open;try{localStorage.setItem("ppk-open",openWith);}catch(e){}day();});
+  box.querySelectorAll("a.yv").forEach(a=>a.onclick=e=>{if(!isMobile||openWith!=="app")return;e.preventDefault();
+    loadVer("kjv").catch(()=>{}).then(()=>tryApp(a,ref));});}
+
+
+// ---- open the reader's own KJV app through an iPhone Shortcut ----
+const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const SHORTCUT="Open KJV Bible";
+let kjvApp=false;try{kjvApp=localStorage.getItem("ppk-kjvapp")==="1";}catch(e){}
+let kjvHelp=false;
+function kjvAppHTML(ref){if(!isIOS||ver!=="kjv")return "";
+  if(kjvApp)return `<div class="openin"><div class="openbtns"><a class="openbtn" id="kjvgo" href="shortcuts://run-shortcut?name=${encodeURIComponent(SHORTCUT)}">Open ${ref} in my KJV app ↗</a></div>
+<p class="alt">The reference is copied as you tap, so you can paste it into the app's search. <button class="textctl" id="kjvoff">Turn off</button></p><p class="alt" id="kjvmsg" hidden></p></div>`;
+  return `<button class="textctl" id="kjvsetup">Read in my own KJV Bible app</button>${kjvHelp?`<div class="openin"><p><b>One-time setup (1 minute):</b></p><ol class="steps">
+<li>Open the <b>Shortcuts</b> app on your iPhone and tap <b>+</b>.</li>
+<li>Tap <b>Add Action</b>, search for <b>Open App</b>, and add it.</li>
+<li>Tap <b>App</b> in the action and choose your <b>Holy Bible King James Version</b> app.</li>
+<li>Tap the name at the top, choose <b>Rename</b>, and type exactly: <b>${SHORTCUT}</b>. Tap <b>Done</b>.</li>
+<li>Come back here and tap <b>Turn on</b>.</li></ol>
+<div class="openbtns"><button class="openbtn" id="kjvon">Turn on</button></div></div>`:""}`;}
+function wireKjv(ref){const g=document.getElementById("kjvgo");
+  if(g)g.onclick=()=>{try{navigator.clipboard.writeText(ref).catch(()=>{});}catch(e){}
+    setTimeout(()=>{if(!document.hidden){const m=document.getElementById("kjvmsg");if(m){m.hidden=false;m.textContent=`If nothing opened, check that the Shortcut is named exactly “${SHORTCUT}”.`;}}},2000);};
+  const off=document.getElementById("kjvoff");if(off)off.onclick=()=>{kjvApp=false;try{localStorage.setItem("ppk-kjvapp","0");}catch(e){}day();};
+  const su=document.getElementById("kjvsetup");if(su)su.onclick=()=>{kjvHelp=!kjvHelp;day();};
+  const on=document.getElementById("kjvon");if(on)on.onclick=()=>{kjvApp=true;kjvHelp=false;try{localStorage.setItem("ppk-kjvapp","1");}catch(e){}day();};}
+
+function wireScripture(ref){const box=document.getElementById("scripture");if(!box)return;
+  box.querySelector(".vers").onclick=e=>{const b=e.target.closest("button[data-v]");if(!b)return;ver=b.dataset.v;try{localStorage.setItem("ppk-ver",ver);}catch(x){}day();};
+  document.getElementById("stoggle").onclick=()=>{showText=!showText;try{localStorage.setItem("ppk-hide",showText?"0":"1");}catch(x){}day();};
+  wireOpen(box,ref);wireKjv(ref);loadVer("kjv").catch(()=>{});
+  fillText(ref);}
+
 function day(){const d=days[sel],w=W[d.wi];const card=$("day");card.dataset.part=w.p;
 const isToday=sel===TODAY;const k=key(d.dt);const isDone=done.has(k);
 let body;
 if(!d.fam){const [ref,title,note,ask,pray]=w.d[d.i];
 body=`<div class="passage"><div class="eyebrow">Read</div><div class="ref">${ref}</div><div class="dtitle">${title}</div></div>
+${scriptureHTML(ref)}
 <div class="block"><div class="eyebrow">Key insight</div><p>${note}</p></div>
 <div class="block"><div class="eyebrow">Study question · write your answer</div><p>${ask}</p></div>
 <div class="block pray"><div class="eyebrow">Prayer point</div><p>${pray}</p></div>`;}
 else{const f=w.fam;
 body=`<div class="passage"><div class="eyebrow">Family night · teach it</div><div class="ref">${f.ref||"Review this week's passages"}</div><div class="dtitle">${w.t}</div></div>
+${isRef(f.ref)?scriptureHTML(f.ref):""}
 <div class="block"><div class="eyebrow">The big idea</div><p>${f.idea}</p></div>
 <div class="block"><div class="eyebrow">Ask your children</div><ul>${f.q.map(q=>`<li>${q}</li>`).join("")}</ul></div>
 <div class="block"><div class="eyebrow">Activity</div><p>${f.act}</p></div>
@@ -884,7 +1017,9 @@ card.innerHTML=`<div class="dhead"><div class="dmeta"><span class="ddate">${fmt(
 <div class="block"><div class="eyebrow">Practicalise this week</div><p>${w.live}</p></div></div>
 <button class="done${isDone?" on":""}" id="done" aria-pressed="${isDone}">${isDone?"✓ Completed":"Mark this session complete"}</button>`;
 $("prev").onclick=()=>go(sel-1);$("next").onclick=()=>go(sel+1);$("tod").onclick=()=>go(TODAY);
-$("done").onclick=()=>{done.has(k)?done.delete(k):done.add(k);save();render();};}
+$("done").onclick=()=>{done.has(k)?done.delete(k):done.add(k);save();render();};
+const curRef=d.fam?(isRef(w.fam.ref)?w.fam.ref:null):w.d[d.i][0];if(curRef)wireScripture(curRef);
+loadVer(textCode()).catch(()=>{});}
 
 function side(){const d=days[sel],w=W[d.wi];
 $("rhythm").dataset.part=w.p;$("weekpanel").dataset.part=w.p;
@@ -900,6 +1035,7 @@ function go(i){sel=Math.max(0,Math.min(days.length-1,i));render();}
 document.addEventListener("keydown",e=>{if(e.target.closest("input,textarea"))return;if(e.key==="ArrowLeft")go(sel-1);if(e.key==="ArrowRight")go(sel+1);});
 render();
 })();
+
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}
 </script>
 </body>
