@@ -1,5 +1,5 @@
-const CACHE = "ppk-v3";
-const CORE = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
+const CACHE = "ppk-v4";
+const CORE = ["./", "index.html", "manifest.webmanifest", "icon-192-tiles.png", "icon-512-tiles.png", "apple-touch-icon-tiles.png"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
 });
