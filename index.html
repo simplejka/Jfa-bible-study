@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1A1D2B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bible Study">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<title>Prophet, Priest &amp; King</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F4F5F8;--surface:#FFFFFF;--ink:#1A1D2B;--muted:#596078;--line:#DADDE7;
+  --blue:#2A5595;--scarlet:#A8322E;--purple:#653A8C;--gold:#936A12;
+  --acc:var(--gold);
+  --serif:"Cormorant Garamond",Garamond,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#10121A;--surface:#181B26;--ink:#E8EAF2;--muted:#9CA2B8;--line:#2B2F3F;
+  --blue:#88AAE4;--scarlet:#E5877E;--purple:#BC9CE1;--gold:#D9B45E;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10121A;--surface:#181B26;--ink:#E8EAF2;--muted:#9CA2B8;--line:#2B2F3F;
+  --blue:#88AAE4;--scarlet:#E5877E;--purple:#BC9CE1;--gold:#D9B45E;color-scheme:dark}
+[data-part="prophet"]{--acc:var(--blue)}
+[data-part="priest"]{--acc:var(--scarlet)}
+[data-part="king"]{--acc:var(--purple)}
+[data-part="found"],[data-part="whole"]{--acc:var(--gold)}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--sans);margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px;padding-block:36px 72px}
+h1,h2,h3{text-wrap:balance;margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.eyebrow{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+/* header */
+header{display:grid;gap:10px;margin-bottom:28px}
+.title{font-family:var(--serif);font-weight:600;font-size:clamp(2.6rem,7vw,4.4rem);line-height:.95;letter-spacing:-.01em}
+.title .p{color:var(--blue)}.title .r{color:var(--scarlet)}.title .k{color:var(--purple)}
+.title .amp{font-style:italic;font-weight:500;color:var(--muted)}
+.lede{max-width:62ch;color:var(--muted);margin:4px 0 0}
+
+/* journey */
+.journey{display:grid;gap:10px;margin-bottom:28px}
+.jrow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.progress{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.strip{display:flex;gap:2px;align-items:flex-end;height:34px}
+.seg{flex:1;min-width:0;height:16px;border:0;padding:0;border-radius:2px;background:var(--acc);opacity:.28;cursor:pointer;transition:height .15s,opacity .15s}
+.seg.past{opacity:.7}
+.seg.now{height:26px;opacity:1}
+.seg.sel{height:34px;opacity:1;box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--ink)}
+.seg:hover{opacity:1}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.8rem;color:var(--muted)}
+.legend button{background:none;border:0;padding:2px 0;cursor:pointer;display:flex;align-items:center;gap:7px;color:var(--muted);text-align:left}
+.legend button:hover{color:var(--ink)}
+.legend i{width:10px;height:10px;border-radius:2px;background:var(--acc);display:inline-block;flex:none}
+.legend b{color:var(--ink);font-weight:500}
+
+/* layout */
+.grid{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:880px){.grid{grid-template-columns:1fr}}
+
+/* day card */
+.day{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.dhead{background:color-mix(in srgb,var(--acc) 9%,var(--surface));padding:18px 24px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;border-bottom:1px solid color-mix(in srgb,var(--acc) 22%,var(--line))}
+.dmeta{display:grid;gap:2px}
+.ddate{font-weight:600}
+.dsub{font-size:.82rem;color:var(--muted)}
+.dsub b{color:var(--acc);font-weight:600}
+.nav{display:flex;gap:6px}
+.nav button{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:.85rem}
+.nav button:hover{border-color:var(--acc)}
+.nav .today{font-weight:600}
+.dbody{padding:26px 24px 8px;display:grid;gap:22px}
+.passage{display:grid;gap:4px}
+.ref{font-family:var(--serif);font-weight:700;font-size:clamp(1.9rem,4.4vw,2.5rem);line-height:1.05;color:var(--acc)}
+.dtitle{font-family:var(--serif);font-weight:500;font-style:italic;font-size:1.35rem;color:var(--ink)}
+.block{display:grid;gap:6px}
+.block p{margin:0;max-width:66ch}
+.block ul{margin:0;padding-left:1.2em;display:grid;gap:4px}
+.pray{background:color-mix(in srgb,var(--acc) 7%,var(--surface));border-radius:10px;padding:16px 18px}
+.pray p{font-family:var(--serif);font-size:1.22rem;line-height:1.45;font-weight:500}
+.wfoot{border-top:1px solid var(--line);padding:20px 24px 24px;display:grid;gap:18px;grid-template-columns:1fr 1fr}
+@media (max-width:600px){.wfoot{grid-template-columns:1fr}}
+.mv{font-family:var(--serif);font-style:italic;font-size:1.15rem;line-height:1.45;margin:0}
+.mvref{font-size:.82rem;color:var(--muted);margin-top:4px}
+.done{margin:0 24px 24px;display:flex;align-items:center;gap:10px;width:calc(100% - 48px);justify-content:center;padding:12px;border-radius:10px;border:1.5px dashed color-mix(in srgb,var(--acc) 55%,var(--line));background:transparent;cursor:pointer;font-weight:600;color:var(--acc)}
+.done.on{border-style:solid;background:var(--acc);color:var(--surface)}
+
+/* side */
+aside{display:grid;gap:20px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px}
+.panel h3{font-family:var(--serif);font-weight:600;font-size:1.35rem;margin-bottom:4px}
+.panel .sum{color:var(--muted);font-size:.9rem;margin:0 0 12px}
+.rhythm{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:10px}
+.rhythm li{display:grid;grid-template-columns:52px 1fr;gap:10px;font-size:.9rem}
+.rhythm .t{font-variant-numeric:tabular-nums;color:var(--acc);font-weight:600;font-size:.82rem;padding-top:1px}
+.rhythm b{display:block;font-weight:600}
+.rhythm span{color:var(--muted)}
+.week{list-style:none;margin:0;padding:0;display:grid}
+.week button{width:100%;display:grid;grid-template-columns:88px 1fr 18px;gap:8px;align-items:center;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:9px 4px;cursor:pointer;font-size:.88rem}
+.week li:first-child button{border-top:0}
+.week button:hover{background:color-mix(in srgb,var(--acc) 6%,transparent)}
+.week button.cur{background:color-mix(in srgb,var(--acc) 11%,transparent);font-weight:600}
+.week .wd{white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums;font-size:.8rem}
+.week .fn{color:var(--acc);font-weight:600}
+.week .ck{color:var(--acc);font-weight:700;text-align:center}
+
+/* toolkit */
+.kit{margin-top:56px;display:grid;gap:22px}
+.kit>h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,4vw,2.6rem)}
+.kit .intro{color:var(--muted);max-width:64ch;margin:-12px 0 0}
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.9rem}
+th,td{padding:12px 16px;text-align:left;vertical-align:top;border-top:1px solid var(--line)}
+thead th{border-top:0;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td:first-child{font-family:var(--serif);font-weight:700;font-size:1.2rem;white-space:nowrap;color:var(--acc)}
+.cat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;display:grid;gap:12px}
+.cat p{margin:0;max-width:72ch}
+.cat q{font-family:var(--serif);font-size:1.15rem;quotes:none}
+.cat .src{font-size:.82rem;color:var(--muted)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
+.cols .panel ul{margin:8px 0 0;padding-left:1.1em;display:grid;gap:8px;font-size:.92rem}
+.cols .panel ol{margin:8px 0 0;padding-left:1.3em;display:grid;gap:6px;font-size:.92rem}
+@media (max-width:600px){
+  .wrap{padding-block:18px 56px}
+  header{margin-bottom:16px;gap:6px}
+  .title{font-size:2.3rem}
+  .lede,.legend{display:none}
+  .journey{margin-bottom:18px}
+  .dhead{padding:14px 16px}
+  .dbody{padding:20px 16px 4px}
+  .wfoot{padding:18px 16px 20px}
+  .done{margin:0 16px 20px;width:calc(100% - 32px)}
+}
+footer{margin-top:40px;color:var(--muted);font-size:.82rem;max-width:72ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head><body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">30 minutes a day · Sept 27, 2026 – Dec 31, 2027</div>
+  <h1 class="title"><span class="p">Prophet</span>, <span class="r">Priest</span> <span class="amp">&amp;</span> <span class="k">King</span></h1>
+  <p class="lede">A daily walk through the whole Bible to know Christ in his three offices: to learn it, live it, and teach it at home. Six study days each week, then a family night on the seventh to teach what you learned.</p>
+</header>
+
+<section class="journey" aria-label="Year overview">
+  <div class="jrow"><span class="eyebrow">66 weeks · tap any week</span><span class="progress" id="progress"></span></div>
+  <div class="strip" id="strip"></div>
+  <div class="legend" id="legend"></div>
+</section>
+
+<div class="grid">
+  <article class="day" id="day" aria-live="polite"></article>
+  <aside>
+    <div class="panel" id="rhythm"></div>
+    <div class="panel" id="weekpanel"></div>
+  </aside>
+</div>
+
+<section class="kit" data-part="whole">
+  <h2>Teaching toolkit</h2>
+  <p class="intro">Keep this close. It summarises the whole year in one table and gives you a simple, repeatable way to teach your family.</p>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Office</th><th>What Christ does</th><th>The need it meets</th><th>Old Testament pictures</th><th>Our response</th></tr></thead>
+    <tbody>
+      <tr data-part="prophet"><td>Prophet</td><td>Reveals the Father and his will, by his Word and Spirit</td><td>Ignorance and darkness</td><td>Moses, Samuel, Elijah, Isaiah</td><td>Listen and obey</td></tr>
+      <tr data-part="priest"><td>Priest</td><td>Offered himself once for sin; intercedes and blesses</td><td>Guilt and separation from God</td><td>Aaron, Melchizedek, the tabernacle, the lamb</td><td>Trust and draw near</td></tr>
+      <tr data-part="king"><td>King</td><td>Rules, defends, and conquers every enemy</td><td>Rebellion and bondage</td><td>David, Solomon, the shepherd-king</td><td>Submit, serve, rest secure</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="cat">
+    <div class="eyebrow">A classic summary to memorise</div>
+    <p><q>Christ executeth the office of a prophet, in revealing to us, by his word and Spirit, the will of God for our salvation.</q></p>
+    <p><q>Christ executeth the office of a priest, in his once offering up of himself a sacrifice to satisfy divine justice, and reconcile us to God; and in making continual intercession for us.</q></p>
+    <p><q>Christ executeth the office of a king, in subduing us to himself, in ruling and defending us, and in restraining and conquering all his and our enemies.</q></p>
+    <div class="src">Westminster Shorter Catechism (1647), Questions 24–26</div>
+  </div>
+
+  <div class="cols">
+    <div class="panel">
+      <h3>Family night in 25 minutes</h3>
+      <ol>
+        <li><b>Sing or pray</b> (3 min). One short song or prayer to settle in.</li>
+        <li><b>Memory verse</b> (3 min). Say it together; let the youngest go first.</li>
+        <li><b>Read</b> (5 min). One passage from the week, read aloud slowly.</li>
+        <li><b>Big idea</b> (2 min). Say the one-sentence summary. Repeat it twice.</li>
+        <li><b>Ask</b> (4 min). Use the questions. Let them answer before you do.</li>
+        <li><b>Do</b> (6 min). The activity makes the idea stick.</li>
+        <li><b>Bless</b> (2 min). Pray, then speak Numbers 6:24–26 over each child.</li>
+      </ol>
+    </div>
+    <div class="panel">
+      <h3>Teaching by age</h3>
+      <ul>
+        <li><b>Ages 2–5:</b> One sentence, one picture, one action. Repeat the same big idea all week. Props and songs do the heavy lifting.</li>
+        <li><b>Ages 6–10:</b> Let them retell the story, draw it and ask “why.” This is the best age for memory verses.</li>
+        <li><b>Ages 11 and up:</b> Ask what they think before you explain. Let them lead a family night. Welcome honest doubts and questions.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Building your confidence</h3>
+      <ul>
+        <li>Teach only what you studied this week. Being one step ahead is enough.</li>
+        <li>“I don't know. Let's find out together” is a good answer. Write the question down and bring the answer next week.</li>
+        <li>Keep a journal. By December 2027 you will have your own notes on every passage to teach from for years.</li>
+        <li>Aim for one clear sentence. If the children remember the big idea, the night worked.</li>
+        <li>Teach-back nights close each unit. Explaining is how you find out what you really know.</li>
+        <li>Your sufficiency is of God (2 Cor 3:5). The Spirit is the real teacher.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Missed a day?</h3>
+      <ul>
+        <li>Don't try to catch up everything. Pick up at today's reading.</li>
+        <li>If you like, read the missed passage on Sunday afternoon.</li>
+        <li>Grace, not guilt. The goal is knowing Christ, not a perfect streak.</li>
+        <li>Use any translation your family reads. Memory verses here are quoted from the King James Version, which is in the public domain.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>The colours follow the tabernacle veil, woven of blue, purple and scarlet (Exodus 26:31): blue for the Prophet, scarlet for the Priest, purple for the King, and gold, from the ark and mercy seat, for the weeks that gather all three. Your checkmarks are saved on this device.</footer>
+</div>
+<script>
+const W=[
+{p:"found",t:"The Anointed One: Why Three Offices?",s:"“Christ” means Anointed One. Israel anointed three kinds of servants: prophets, priests and kings. Jesus fulfils all three.",mv:["Luke 4:18a","The Spirit of the Lord is upon me, because he hath anointed me to preach the gospel to the poor;"],live:"Each time you pray this week, begin with “Jesus, my Prophet, Priest and King.”",
+fam:{idea:"Jesus is the Christ, God's Anointed. He is our Prophet who tells us about God, our Priest who brings us to God, and our King who rules us for God.",q:["What does the name “Christ” mean?","Which job of Jesus do you need most today: to learn, to be forgiven, or to be led?"],act:"Set out three props: a Bible or scroll (Prophet), a towel or robe (Priest) and a paper crown (King). Let each child hold one and say what Jesus does in that role. Dab a little olive oil on each hand as you pray."},
+d:[
+["Luke 4:16–21","The Anointed One","“Christ” (Greek) and “Messiah” (Hebrew) both mean “Anointed One.” In Israel three offices were anointed: prophets, priests and kings. Jesus reads Isaiah 61 and claims it for himself.","What does Jesus say he was anointed to do? Which of these sound like a prophet, a priest, or a king?","Thank God that Jesus is the Christ, anointed by the Spirit for me. Ask him to open my eyes this year as I study him."],
+["Exodus 29:1–9","Priests Anointed","Aaron and his sons were washed, clothed and anointed before they could serve at the altar. Anointing meant being set apart by God for a holy task.","Why could no one appoint himself priest? What does that say about Jesus being appointed by the Father (Heb 5:4–5)?","Lord, set me apart too. Wash me, clothe me in Christ's righteousness, and make me ready to serve my family."],
+["1 Samuel 16:1–13","A King Anointed","God chose David, the youngest shepherd, because God looks on the heart. The Spirit came on David from that day.","What did God see that Samuel missed? How is David a picture of Jesus, the shepherd-king from Bethlehem?","Father, give me a heart you delight in. Help me lead my home like a shepherd, not a boss."],
+["1 Kings 19:9–18","A Prophet Anointed","A discouraged Elijah hears God's still small voice and is told to anoint kings and Elisha as prophet. God keeps his word going through chosen messengers.","How did God speak to Elijah? What encourages me about God's care for a weary servant?","Lord, when I feel inadequate to teach, speak to me in the stillness and remind me I am not alone."],
+["Hebrews 1:1–4","All Three in One Sentence","God has spoken by his Son (Prophet). He made purification for sins (Priest). He sat down at the right hand of the Majesty on high (King).","Underline the phrase for each office. Why does it matter that Jesus is all three at once?","Jesus, you are God's final Word, my cleansing, and my Lord. Be all three to me today."],
+["Revelation 1:4–8","Witness, Saviour, Ruler","John calls Jesus the faithful witness (Prophet), the one who freed us by his blood (Priest), and ruler of the kings of the earth (King). He has made us kings and priests.","What has Jesus made us? How might that change how I see my role at home?","Glory to you, Lord Jesus. Make our home a small kingdom of priests who serve you."]]},
+{p:"found",t:"Why We Need All Three",s:"Sin left us ignorant of God, guilty before God, and enslaved away from God. We need a Prophet, a Priest and a King.",mv:["Genesis 3:15","And I will put enmity between thee and the woman, and between thy seed and her seed; it shall bruise thy head, and thou shalt bruise his heel."],live:"Notice one moment each day when you need truth, forgiveness or strength, and ask Jesus for it by name as Prophet, Priest or King.",
+fam:{idea:"Sin makes us lost, dirty and weak. Jesus shows us the way (Prophet), makes us clean (Priest), and makes us strong and safe (King).",q:["What happened when Adam and Eve listened to the wrong voice?","What did God promise even after they sinned?"],act:"Three quick stations: a blindfolded walk guided by a parent's voice (Prophet), washing muddy hands (Priest), and following a “captain” across the room (King)."},
+d:[
+["Genesis 1:26–31","Made to Know, Worship and Rule","Humanity was made in God's image and given dominion. Many teachers see Adam as a first prophet (hearing and naming), priest (in God's presence) and king (ruling creation).","What three things were humans made for in these verses?","Creator, thank you for making me in your image. Restore in me what sin has broken."],
+["Genesis 2:8–17","Eden, the First Sanctuary","Adam was placed to “dress and keep” the garden. The same pair of Hebrew words later describes Levites serving at the tabernacle (Num 3:7–8). Eden was a temple-garden.","What word did God give Adam? What was he to guard?","Lord, help me guard my home and keep your word at its centre."],
+["Genesis 3:1–15","The Fall and the First Promise","The serpent twisted God's word, Adam failed to guard, and sin entered. Yet God promised a seed of the woman who would crush the serpent's head.","How did the serpent attack God's word? What does verse 15 promise?","Father, thank you that your first word after sin was a promise. Protect my family from the lies of the enemy."],
+["Romans 1:18–25","Darkened Minds Need a Prophet","Without God's revelation, people exchange the truth for a lie. Our first need is to be told the truth about God.","Where do I see people (or myself) exchanging God's truth for something else?","Lord, shine truth into my mind and my children's minds. Keep us from idols."],
+["Romans 3:19–26","Guilty Hearts Need a Priest","All have sinned. God set forth Christ as a propitiation by his blood, so he is both just and the justifier.","What does it mean that God is both just and the one who justifies?","Holy God, I confess my sin. Thank you for Jesus' blood that makes me right with you."],
+["Colossians 1:13–20","Enslaved Lives Need a King","God rescued us from the power of darkness and moved us into the kingdom of his dear Son, who has first place in everything.","What kingdom were we in? What kingdom are we in now?","Jesus, reign over every room of my house and every part of my heart."]]},
+{p:"prophet",t:"What Is a Prophet?",s:"A prophet is God's mouth. He receives God's word and speaks it faithfully to the people.",mv:["Deuteronomy 18:15","The LORD thy God will raise up unto thee a Prophet from the midst of thee, of thy brethren, like unto me; unto him ye shall hearken;"],live:"Before each decision this week, ask “What has God already said about this?” and find one verse.",
+fam:{idea:"A prophet is God's messenger. He doesn't make up his own message. He says exactly what God says.",q:["Why does it matter that a messenger says the exact words?","Who is God's greatest messenger?"],act:"Play the whisper game with a Bible verse. Then read the verse aloud from the Bible and compare. God's word never changes."},
+d:[
+["Deuteronomy 18:15–22","The Prophet Like Moses","At Sinai the people begged not to hear God's voice directly. God promised a Prophet like Moses who would speak his words, and everyone must listen to him.","What were the marks of a true prophet? What happens to those who will not listen?","Lord, give me a listening heart. Let me never ignore your Prophet."],
+["Exodus 4:10–16; 7:1–2","A Mouth for God","Aaron was to be Moses' “prophet,” his mouth. That is the heart of the office: speaking someone else's words.","Moses felt unable to speak. How did God answer his excuses?","Father, I also feel weak at speaking. Be with my mouth and teach me what to say."],
+["Jeremiah 1:4–10","Words in the Mouth","God knew Jeremiah before birth and put his words in his mouth. The young prophet's authority came from God, not from his age.","What excuse did Jeremiah give? What did God promise?","Lord, put your words in my mouth for my children. Remove my fear."],
+["Numbers 12:1–8","Face to Face","God spoke to other prophets in visions, but to Moses “mouth to mouth.” Jesus is greater still: he is at the Father's side (John 1:18).","Why was it serious to speak against Moses?","Thank you, Father, that in Jesus I hear you clearly. Give me reverence for your word."],
+["Amos 3:1–8","The Lion Has Roared","God reveals his plans to his servants the prophets. When God speaks, the prophet cannot stay silent.","Why can the prophet not keep quiet (v. 8)?","Lord, let your word burn in me so that I cannot keep it from my family."],
+["2 Peter 1:16–21","Carried Along by the Spirit","Scripture did not come by human will. Men spoke from God as the Holy Spirit moved them. The written word is “more sure” than any experience.","Why does Peter call scripture more sure even than what he saw on the mountain?","Holy Spirit, thank you for the Bible. Make it a light in the dark places of my life."]]},
+{p:"prophet",t:"Prophets Who Pointed Forward",s:"Israel's prophets called people back to God and pointed ahead to the greater Prophet.",mv:["1 Samuel 3:10b","Speak; for thy servant heareth."],live:"Start each study session this week by praying Samuel's words out loud.",
+fam:{idea:"God speaks, and we listen. Samuel was a child when he learned to say, “Speak, Lord, I'm listening.”",q:["How many times did God call Samuel?","How can we listen to God today?"],act:"Act out 1 Samuel 3: one child “sleeps” while a parent calls their name from another room. Teach everyone to answer, “Speak, Lord, I'm listening.”"},
+d:[
+["1 Samuel 3:1–21","Speak, Lord","When God's word was rare, the boy Samuel learned to listen, and God let none of his words fall to the ground.","How did Eli help Samuel recognise God's voice? How can I do that for my children?","Speak, Lord, your servant is listening. Help me teach my children to listen too."],
+["1 Kings 18:20–39","How Long Will You Waver?","Elijah called Israel to choose between God and Baal. The fire fell and the people cried, “The LORD, he is the God.”","What were the people wavering between? What competes for my heart?","Lord, remove my divided heart. Let our home say, “The LORD, he is God.”"],
+["Isaiah 6:1–8","Woe Is Me","Isaiah saw the Lord high and lifted up, confessed his unclean lips, was cleansed by a coal from the altar, and then was sent. John 12:41 says he saw Christ's glory.","What came first, cleansing or sending? Why?","Holy Lord, cleanse my lips. Here am I; send me, starting at home."],
+["Ezekiel 2:1–3:4","Eat This Scroll","Ezekiel had to take God's word in before he could speak it, even to a rebellious people.","What does it mean for me to “eat” God's word before I teach it?","Father, let your word be sweet to me first, so I can pass it on honestly."],
+["Jonah 3:1–10","The Reluctant Prophet","God gave Jonah a second chance, and a pagan city repented. Jesus said “a greater than Jonas is here” (Matt 12:41).","What does Jonah's second chance teach me about God?","Thank you for second chances, Lord. Make me willing where I have been reluctant."],
+["Matthew 23:29–39","Jerusalem, Who Kills the Prophets","Jesus, the final Prophet, grieves over a city that rejected every messenger, like a hen longing to gather her chicks.","How does Jesus feel about those who reject him?","Lord Jesus, give me your tender heart for those who are far from you."]]},
+{p:"prophet",t:"The Prophet Like Moses Has Come",s:"The New Testament declares that Jesus is the Prophet Moses promised, and greater than Moses.",mv:["Matthew 17:5b","This is my beloved Son, in whom I am well pleased; hear ye him."],live:"Choose one command of Jesus from this week's readings and obey it deliberately each day.",
+fam:{idea:"Moses was a great prophet, but Jesus is even greater. God himself said, “Listen to him!”",q:["What did God say on the mountain?","What is one thing Jesus tells us to do?"],act:"Make a two-column chart: Moses | Jesus. Fill it in together: saved as a baby from a cruel king; went up a mountain; gave bread; led people to freedom. Ask how Jesus is greater in each."},
+d:[
+["Acts 3:17–26","Peter Names the Prophet","Peter quotes Deuteronomy 18 and says it is fulfilled in Jesus. Everyone must listen to him.","According to Peter, how should people respond?","Lord, turn each of us in my house from our wickedness, as you promised."],
+["Acts 7:35–53","Stephen's Sermon","Stephen shows that Israel rejected Moses first, then the prophets, then the Righteous One. Rejecting God's messengers is an old pattern.","What pattern does Stephen trace? Where do I resist the Holy Spirit?","Holy Spirit, soften my heart where it resists you."],
+["John 1:19–28","Are You That Prophet?","Leaders asked John the Baptist if he was “that prophet.” He said no. He was only a voice pointing to someone greater.","Why did John turn attention away from himself?","Lord, make me a voice that points my children to Jesus, not to me."],
+["John 6:1–15, 30–35","Bread from Heaven","After feeding the 5,000, people said, “This is of a truth that prophet.” Moses gave manna; Jesus is himself the true bread.","How is Jesus like Moses here? How is he greater?","Jesus, bread of life, satisfy my hunger with yourself."],
+["Matthew 17:1–8","Hear Ye Him","At the transfiguration Moses and Elijah (the Law and the Prophets) appear, then vanish, and the Father says, “Hear ye him.”","Why do Moses and Elijah disappear, leaving “Jesus only”?","Father, I want to hear your Son above every other voice."],
+["Hebrews 3:1–6","Greater Than Moses","Moses was faithful as a servant in God's house. Jesus is faithful as the Son over it.","What is the difference between a servant in a house and a son over it?","Jesus, you are over God's house. Help me hold fast my confidence in you."]]},
+{p:"prophet",t:"The Prophet's Authority",s:"The prophets said “Thus saith the LORD.” Jesus said “I say unto you.” His word carries God's own authority.",mv:["Matthew 7:24","Therefore whosoever heareth these sayings of mine, and doeth them, I will liken him unto a wise man, which built his house upon a rock:"],live:"Each day, write one sentence Jesus said and how you will do it. Then do it.",
+fam:{idea:"When Jesus speaks, God is speaking. Wise people hear and do what he says.",q:["What happened to the house built on sand?","What is one thing Jesus said that we can do this week?"],act:"Build two small towers, one on a rock or book and one on loose sand or rice, then pour water. Sing “The wise man built his house upon the rock.”"},
+d:[
+["Mark 1:21–28","Not as the Scribes","The people were astonished. Jesus taught with authority, and even unclean spirits obeyed his word.","What made Jesus' teaching different from the scribes'?","Lord, let your word have authority in my home over every other voice."],
+["Matthew 7:24–29","Built on the Rock","Hearing and doing Jesus' words is like building on rock. The crowd noticed he taught as one having authority.","Both builders heard. What was the difference?","Jesus, make me a doer and not only a hearer. Build our family on your words."],
+["John 7:14–18, 45–46","Never Man Spake Like This","Jesus said his teaching came from the one who sent him. Even the temple officers said, “Never man spake like this man.”","How can I know Jesus' teaching is from God (v. 17)?","Father, give me a will to do your will, so that I will know your truth."],
+["John 12:44–50","Speaking the Father's Words","Jesus spoke exactly what the Father commanded. To reject his words is to reject the Father.","Why does Jesus connect his words with eternal life?","Thank you, Jesus, for speaking the Father's words to me. Let them bring life to my family."],
+["Luke 24:13–27","Mighty in Deed and Word","The Emmaus disciples called Jesus “a prophet mighty in deed and word.” Then he explained how all the scriptures spoke of him.","What did Jesus do for their understanding? What did he use?","Lord, open the scriptures to me as you did on the Emmaus road."],
+["Matthew 21:10–17","This Is Jesus the Prophet","As Jesus entered Jerusalem the crowds said, “This is Jesus the prophet.” Children in the temple cried “Hosanna.”","What does Jesus say about the praise of children (v. 16)?","Lord, perfect praise from the mouths of my children. Let them know you early."]]},
+{p:"prophet",t:"The Sermon on the Mount, Part 1",s:"On a mountain, like Moses at Sinai, Jesus the Prophet teaches the life of his kingdom.",mv:["Matthew 5:16","Let your light so shine before men, that they may see your good works, and glorify your Father which is in heaven."],live:"Memorise the Lord's Prayer as a family and pray it together at one meal each day.",
+fam:{idea:"Jesus taught that God's family is salt and light. We make the world better and show people what God is like.",q:["What does salt do? What does light do?","How can our family be light this week?"],act:"Taste plain and salted crackers. Then turn off the lights and light one candle. Talk about how one small light fills a dark room."},
+d:[
+["Matthew 5:1–12","The Blessed Life","Jesus sat on a mountain like a new Moses and described the blessed life of kingdom people: poor in spirit, mourning, meek, hungry for righteousness.","Which beatitude describes me least? Which do I most want my children to have?","Lord, make me poor in spirit, meek and merciful. Grow these in my children."],
+["Matthew 5:13–20","Salt and Light","Disciples are salt and light. Jesus came not to destroy the Law and the Prophets but to fulfil them.","How is our home salt and light to our neighbours?","Jesus, let our home shine so that others glorify our Father."],
+["Matthew 5:21–37","The Heart Behind the Law","Jesus goes deeper than outward rules. Anger, lust and dishonest words are matters of the heart.","Where does Jesus locate sin? What relationship do I need to reconcile (vv. 23–24)?","Search my heart, Lord. Give me courage to make peace where I have wronged someone."],
+["Matthew 5:38–48","Love Your Enemies","Kingdom people do not retaliate. They love enemies and pray for persecutors, like the Father who sends rain on all.","Who is hard for me to love right now?","Father, help me pray for and bless the person I find hardest to love."],
+["Matthew 6:1–18","In Secret","Giving, prayer and fasting are for the Father who sees in secret. Jesus gives the model prayer.","Why does Jesus warn against being seen by others?","Our Father in heaven, hallowed be your name. Teach me to pray in secret."],
+["Matthew 6:19–34","Treasure and Worry","Where your treasure is, your heart will be. The Father feeds birds and clothes lilies, so seek his kingdom first.","What do I worry about most? What does Jesus say to it?","Father, I give you my worries about work and family. I will seek your kingdom first."]]},
+{p:"prophet",t:"The Sermon on the Mount, Part 2",s:"Jesus finishes his great sermon with a call to act on his words.",mv:["James 1:22","But be ye doers of the word, and not hearers only, deceiving your own selves."],live:"Practise James 1:19 at home: listen fully before you respond to your children.",
+fam:{idea:"Jesus wants us to do what he says, not just hear it. The Golden Rule: treat others the way you want to be treated.",q:["What is the Golden Rule?","When did you treat someone the way you would want to be treated?"],act:"Give each child a “Golden Rule mission” card for the week (help a sibling, share a toy). Report back at the next family night."},
+d:[
+["Matthew 7:1–12","Judge Not; Ask, Seek, Knock","Remove the beam from your own eye first. Ask the Father, who gives good gifts. Treat others as you want to be treated.","What beam do I need to deal with before correcting my children?","Father, show me my own faults first. I ask, seek and knock for my family's needs."],
+["Matthew 7:13–23","Two Gates, Two Trees","Jesus warns of false prophets, known by their fruit. Saying “Lord, Lord” is not enough; he wants doers of the Father's will.","How do I test a teacher's message by its fruit?","Lord, protect my family from false teaching. Let our fruit show we are yours."],
+["Luke 6:20–38","The Sermon on the Plain","Luke's version includes blessings and woes and the call to give generously: “with the same measure… it shall be measured to you again.”","What differences do I notice from Matthew's account?","Lord, make me generous in forgiveness and in giving."],
+["Luke 6:39–49","A Student Like His Teacher","“Every one that is perfect shall be as his master.” Children become like their teachers, including their parents.","What am I modelling for my children without saying a word?","Jesus, make me like you, so my children see you in me."],
+["Matthew 22:34–40","The Greatest Commandment","The Prophet sums up the Law: love God with all your heart, soul and mind, and your neighbour as yourself.","How does love for God show up in love for my wife and children?","Father, I want to love you with everything. Let that love overflow into my home."],
+["James 1:19–27","Doers of the Word","James, the brother of Jesus, echoes the sermon: be swift to hear, slow to speak, slow to wrath; look into the word and do it.","Which part of verse 19 do I most need at home?","Lord, make me quick to hear, slow to speak and slow to anger with my family."]]},
+{p:"prophet",t:"The Prophet Teaches in Parables",s:"Jesus told earthly stories with heavenly meaning, revealing truth to seekers and hiding it from the proud.",mv:["Luke 15:7","I say unto you, that likewise joy shall be in heaven over one sinner that repenteth, more than over ninety and nine just persons, which need no repentance."],live:"Tell one parable at dinner in your own words and ask your children what it means.",
+fam:{idea:"Jesus told stories to teach about God. In the story of the lost sheep, the shepherd searches until he finds the one that is lost. That is how God loves us.",q:["How did the shepherd feel when he found his sheep?","How does God feel when someone comes back to him?"],act:"Hide a toy sheep or coin somewhere in the house. Let the children search, then celebrate loudly when it's found, just like heaven does."},
+d:[
+["Matthew 13:1–23","The Sower","The same seed falls on four soils. The difference is the condition of the heart that hears.","Which soil describes my heart this season? My children's?","Lord, make our hearts good soil that hears, understands and bears fruit."],
+["Matthew 13:24–43","Wheat, Tares, Mustard, Leaven","Good and evil grow together until harvest, when the Son of Man sorts them. Small beginnings grow great.","What encouragement is here for a small beginning?","Father, grow your kingdom in our home through small daily faithfulness."],
+["Matthew 13:44–52","Treasure and Pearl","The kingdom is worth everything. A scribe instructed in the kingdom brings out treasures new and old.","Why does the man sell everything “for joy”?","Jesus, you are my treasure. Make me a householder who brings out treasure for my family."],
+["Luke 15:1–10","Lost Sheep, Lost Coin","God searches for the lost, and heaven rejoices over one sinner who repents.","How does God feel about the one who is lost?","Father, thank you for seeking me. Seek out anyone in my family who is far from you."],
+["Luke 15:11–32","Two Lost Sons","The father runs to the returning son and pleads with the resentful elder son. Both needed grace.","Am I more like the younger or the elder son? How is God like this father?","Father, make me a dad who runs to my children with grace, as you run to me."],
+["Luke 10:25–37","The Good Samaritan","Asked “Who is my neighbour?”, Jesus answers with a story that asks, “Who acted as a neighbour?”","Who is the neighbour I have been walking past?","Lord, open my eyes to the person you want me to help this week."]]},
+{p:"prophet",t:"The Prophet Foretells",s:"A true prophet's words come true. Jesus foretold his death, his resurrection and the future, and every word stands.",mv:["Luke 21:33","Heaven and earth shall pass away: but my words shall not pass away."],live:"Begin an Advent reading at dinner this week, reminding the family that God keeps his promises.",
+fam:{idea:"Jesus always tells the truth. He said things before they happened, and they came true. So we can trust everything he says.",q:["What did Jesus say would happen to him in Jerusalem?","Which promise of Jesus are you glad about?"],act:"Start a “Promise Kept” paper chain. Each link holds one promise of God and where it came true. Add to it through Advent."},
+d:[
+["Mark 8:27–38","Whom Say Ye That I Am?","Peter confessed Jesus as the Christ. Jesus immediately foretold his suffering, death and rising, and called disciples to take up their cross.","Why did Peter rebuke Jesus? What does taking up my cross mean?","Jesus, you are the Christ. Give me courage to follow you and not be ashamed of your words."],
+["Mark 10:32–34","Going Up to Jerusalem","Jesus gave precise details of what would happen: betrayal, condemnation, mocking, death, and rising on the third day.","Why does it matter that Jesus knew all this and still went?","Lord, thank you for walking willingly to the cross for me."],
+["Matthew 24:1–14","Signs of the End","Jesus foretold the temple's destruction (fulfilled in AD 70) and warned of deceivers, wars and persecution. The gospel will reach all nations.","What does Jesus tell his followers to do in troubled times?","Lord, keep us faithful and calm in troubled times. Let the gospel reach all nations."],
+["Matthew 24:30–44","Be Ready","The Son of Man will come visibly and suddenly. No one knows the day, so be ready.","What does being ready look like in my ordinary week?","Come, Lord Jesus. Find me faithful and my house ready."],
+["John 13:18–21; 14:28–29","I Told You Before","Jesus told his disciples in advance, “that, when it is come to pass, ye might believe.” Fulfilled prophecy builds faith.","How does fulfilled prophecy strengthen my confidence in Christ?","Thank you, Lord, that your word never fails. Strengthen my faith."],
+["Luke 21:5–28","Lift Up Your Heads","Amid frightening events, Jesus says: when these things begin, look up, for your redemption draws near.","What fears do I carry about the future? What does Jesus tell me to do?","Jesus, when fear rises, help me lift up my head and look to you."]]},
+{p:"prophet",t:"Advent: The Prophets Foretold Him",s:"Centuries before Bethlehem, God's prophets described the coming Christ.",mv:["Micah 5:2","But thou, Bethlehem Ephratah, though thou be little among the thousands of Judah, yet out of thee shall he come forth unto me that is to be ruler in Israel; whose goings forth have been from of old, from everlasting."],live:"Read one Advent prophecy aloud at dinner each night and ask, “How did this come true?”",
+fam:{idea:"Long before Jesus was born, God told his prophets where he would be born, who his mother would be, and what he would do. God planned Christmas!",q:["Which town did Micah say Jesus would be born in?","What does Immanuel mean?"],act:"Unroll a long paper timeline. Put Isaiah and Micah at one end (about 700 years before) and Jesus at the other. Let the children walk the distance and marvel at God's planning."},
+d:[
+["Isaiah 7:10–14","Immanuel","A virgin shall conceive and bear a son and call his name Immanuel, God with us (Matt 1:23).","What does “God with us” mean to my family this Christmas?","Immanuel, thank you for coming to be with us. Be present in our home."],
+["Isaiah 9:1–7","Unto Us a Child Is Born","A great light shines in darkness. The child will carry the government on his shoulder and sit on David's throne forever.","Which of the four names means most to me right now?","Wonderful Counsellor, guide me. Prince of Peace, rule my home."],
+["Micah 5:2–5","Out of Bethlehem","The ruler whose goings forth are from everlasting will come from little Bethlehem and shepherd his flock in God's strength.","Why would God choose a small town? What does that say about his ways?","Lord, thank you that you use small and humble things. Use my small efforts at home."],
+["Isaiah 11:1–10","A Rod from Jesse","The Spirit will rest on the Branch: wisdom, understanding, counsel, might, knowledge and the fear of the LORD. His reign brings peace.","List the gifts of the Spirit on the Messiah. Which do I need as a father?","Spirit of wisdom and counsel, rest on me as I lead my family."],
+["Malachi 3:1–4","The Messenger of the Covenant","God promised a messenger (John) to prepare the way. Then the Lord himself would come to his temple and purify the sons of Levi.","What does the refiner's fire picture? Is it comforting or frightening?","Refine me, Lord. Burn away what does not please you."],
+["Luke 1:67–79","Zacharias Prophesies","Filled with the Spirit, Zacharias praises God for a horn of salvation in David's house and says his son will be called “the prophet of the Highest.”","What does Zacharias say the coming Saviour will do (vv. 78–79)?","Dayspring from on high, shine on those in darkness and guide our feet into peace."]]},
+{p:"prophet",t:"The Word Became Flesh",s:"Jesus is not only a prophet who brings God's word. He is God's Word in person.",mv:["John 1:14","And the Word was made flesh, and dwelt among us, (and we beheld his glory, the glory as of the only begotten of the Father,) full of grace and truth."],live:"When you want to know what God is like this week, ask, “What did Jesus do?”",
+fam:{idea:"Jesus is God's Word. When we want to know what God is like, we look at Jesus.",q:["Who made everything, according to John 1?","If you want to know what God is like, who should you look at?"],act:"Look at a photo of a family member who is far away. A photo shows what someone looks like; Jesus is the perfect picture of God (Col 1:15). Draw Jesus doing something kind from the Gospels."},
+d:[
+["John 1:1–5","In the Beginning Was the Word","The Word was with God and was God. All things were made through him. He is life and light.","What does calling Jesus “the Word” tell us about him as Prophet?","Eternal Word, I worship you. Shine your light in my darkness."],
+["John 1:6–13","Receiving the Light","John was a witness, not the light. Those who receive Jesus are given power to become children of God.","How does someone become a child of God, according to vv. 12–13?","Father, thank you for making me your child. Bring each of my children to receive Jesus."],
+["John 1:14–18","Full of Grace and Truth","The Word became flesh and “dwelt” (literally “pitched his tent”) among us. No one has seen God; the Son has made him known.","Why would “pitched his tent” remind a Jewish reader of the tabernacle?","Jesus, grace and truth in person, make my home full of both."],
+["Hebrews 1:1–4","God Hath Spoken by His Son","Earlier revelation came in pieces. Now God has spoken finally and fully in his Son, the express image of his person.","Why can no later prophet or teaching surpass Jesus?","Father, keep me anchored in your final Word, Jesus."],
+["1 John 1:1–4","Heard, Seen, Handled","The apostles heard, saw and touched the Word of life, and wrote so that our joy may be full.","Why does John stress the physical senses?","Thank you for eyewitness testimony. Fill our family with the joy of fellowship with you."],
+["Colossians 1:15–17","The Image of the Invisible God","Jesus is the visible image of the invisible God. All things were created by him and hold together in him.","What does it mean that all things “consist” in Jesus?","Lord, hold our family together in you."]]},
+{p:"prophet",t:"Christmas: God Speaks in a Manger",s:"The Prophet, Priest and King arrives as a baby, announced by angels and received by shepherds.",mv:["Luke 2:11","For unto you is born this day in the city of David a Saviour, which is Christ the Lord."],live:"Before opening gifts, read Luke 2 together and thank God for the gift of Jesus.",
+fam:{ref:"Luke 2:25–35",idea:"Old Simeon waited his whole life to see God's promised one. When he held baby Jesus he said, “Mine eyes have seen thy salvation.” Jesus is a light for all people.",q:["What did Simeon say when he held Jesus?","Who is Jesus a light for?"],act:"Light a candle and, one at a time, have each person say one thing they thank God for about Jesus coming."},
+d:[
+["Luke 1:26–38","The Announcement","Gabriel tells Mary her son will be called the Son of the Highest and given David's throne. Mary answers, “Be it unto me according to thy word.”","What does Mary's response teach me about receiving God's word?","Lord, be it unto me according to your word."],
+["Luke 1:39–56","Mary's Song","Mary magnifies the Lord, who lifts the humble and fills the hungry, remembering his promise to Abraham.","What does Mary praise God for? Write a short song of praise of my own.","My soul magnifies you, Lord, for the great things you have done for my family."],
+["Matthew 1:18–25","Joseph Obeys","Joseph, a just man, obeyed the angel, took Mary as his wife, and named the child Jesus, “for he shall save his people from their sins.”","What does Joseph model for fathers?","Father, make me a quiet, obedient, protective father like Joseph."],
+["Luke 1:57–66","His Name Is John","Zacharias' tongue is loosed the moment he obeys God's word about his son's name.","What happened when Zacharias obeyed?","Lord, loose my tongue to praise you and speak of you in my house."],
+["Luke 2:1–7","No Room","The King of kings is born in a borrowed place and laid in a manger.","Why did God choose such a humble birth?","Lord Jesus, there is room for you in my heart and in our home."],
+["Luke 2:8–20","Good Tidings of Great Joy","Angels announce a Saviour (Priest), Christ (the Anointed) the Lord (King) to ordinary shepherds, who then spread the word.","What did the shepherds do after seeing Jesus?","Glory to God in the highest! Make us like the shepherds who told everyone."]]},
+{p:"prophet",t:"The Prophet Reveals the Father",s:"The deepest thing Jesus reveals is the Father's heart. To know him is to know the Father.",mv:["John 14:6","Jesus saith unto him, I am the way, the truth, and the life: no man cometh unto the Father, but by me."],live:"Write a New Year prayer for each family member and pray it daily.",
+fam:{idea:"Jesus shows us what God the Father is like: kind, holy, loving and close.",q:["What did Jesus tell Philip about seeing the Father?","What is one thing Jesus shows us about God?"],act:"Make a family New Year jar. Each person writes or draws one thing they want to learn about God this year. Seal it and open it next December."},
+d:[
+["John 14:1–11","Shew Us the Father","“He that hath seen me hath seen the Father.” Jesus is the way, the truth and the life.","What did Philip ask? How did Jesus answer?","Jesus, show me the Father. Let my children see his love in me."],
+["John 17:1–8","I Have Manifested Thy Name","Eternal life is knowing the only true God and Jesus Christ. Jesus gave his disciples the Father's words.","How does Jesus define eternal life?","Father, I want to know you. Thank you for the words Jesus gave."],
+["Matthew 11:25–30","Revealed unto Babes","The Father hides truth from the proud and reveals it to babes. Jesus invites the weary to learn from him.","Why does God reveal truth to little children? What is Jesus' yoke like?","Lord, give me a childlike heart. Give rest to my weary soul."],
+["John 8:12–30","The Light of the World","Jesus speaks what he has heard from the Father. Following him means never walking in darkness.","What does it mean to follow the light?","Light of the world, lead our family in the new year."],
+["John 5:19–30","The Son Does What the Father Does","Jesus acts and speaks in perfect union with the Father and gives life to whom he will.","What does verse 24 promise the one who hears Jesus' word?","Lord, I hear your word and believe. Thank you that I have passed from death to life."],
+["John 15:9–17","Friends, Not Servants","Jesus calls his disciples friends because he has made known all he heard from the Father.","What is the difference between a servant and a friend here?","Jesus, thank you for calling me your friend. Help me abide in your love this year."]]},
+{p:"prophet",t:"The Prophet's Signs",s:"John records signs that reveal who Jesus is, “that ye might believe.”",mv:["John 20:31","But these are written, that ye might believe that Jesus is the Christ, the Son of God; and that believing ye might have life through his name."],live:"Share one “sign” of God's faithfulness in your own life with your family this week.",
+fam:{idea:"Jesus did miracles to show us who he is: the Son of God with power over sickness, sadness and even death.",q:["Which miracle is your favourite?","What does it show about Jesus?"],act:"Have everyone close their eyes, then open them to a surprise picture or treat. Talk about how Jesus opened the blind man's eyes, and wants to open our hearts."},
+d:[
+["John 2:1–11","Water into Wine","The first sign reveals Jesus' glory at a wedding. Jars used for ceremonial washing are filled with the best wine.","What does this sign reveal about Jesus?","Lord, where our home has run dry, fill it with your joy."],
+["John 4:46–54","Healing by a Word","Jesus heals the nobleman's son from a distance. The man believed the word and went his way.","What did the father do before he saw proof?","Jesus, I believe your word for my children even before I see results."],
+["John 9:1–17","The Man Born Blind","Jesus is the light of the world and gives sight. The man's testimony grows: “He is a prophet.”","How does the man's understanding of Jesus grow?","Open the eyes of my heart, Lord, and my children's."],
+["John 9:18–41","Once Blind, Now I See","The man is cast out but finds Jesus, believes and worships. The proud who claim to see remain blind.","What does it cost the man to confess Jesus? What does he gain?","Lord, I was blind and now I see. Keep me humble."],
+["John 11:1–27","I Am the Resurrection","Jesus delays, then reveals himself to Martha: “I am the resurrection, and the life.”","Why did Jesus wait? What does Martha confess?","Jesus, when you seem to delay, help me trust you."],
+["John 11:28–44","Lazarus, Come Forth","Jesus weeps, then calls a dead man out by his word. The Prophet's word creates life.","Why did Jesus weep if he knew he would raise Lazarus?","Lord, speak life into the dead places in our family and friendships."]]},
+{p:"prophet",t:"The Prophet Rejected",s:"Like the prophets before him, Jesus was rejected, yet his word still stands.",mv:["Isaiah 53:3a","He is despised and rejected of men; a man of sorrows, and acquainted with grief:"],live:"Look for one quiet opportunity to acknowledge Jesus openly at work or with friends.",
+fam:{idea:"Not everyone listened to Jesus. Some people didn't like what he said. But Jesus kept telling the truth, and we can too, even when it's hard.",q:["What did the people in Nazareth do when Jesus taught?","When is it hard for you to do what's right with friends?"],act:"Role-play: a friend at school asks why you pray before lunch. Practise a kind, simple answer."},
+d:[
+["Luke 4:22–30","No Prophet Is Accepted","In Nazareth familiarity bred contempt. When Jesus spoke of God's grace to outsiders, they tried to throw him off a cliff.","Why is it sometimes hardest to receive truth from people close to us?","Lord, give me grace when my own family doesn't receive what I say. Keep me faithful."],
+["John 1:9–11","His Own Received Him Not","The true light came into his own world, but his own did not receive him.","What causes people to reject Jesus today?","Lord Jesus, I receive you. Let me never take you for granted."],
+["Matthew 21:33–46","The Wicked Husbandmen","The owner sent servants (the prophets), then his son. The rejected stone becomes the head of the corner.","Who are the servants and who is the son? What is the warning?","Father, keep me producing fruit for your kingdom."],
+["John 12:37–43","The Praise of Men","Some believed but would not confess, because they loved human praise more than God's.","Where am I tempted to hide my faith to keep others' approval?","Lord, free me from fear of man. Let me love your praise more."],
+["Luke 7:36–50","If This Man Were a Prophet","Simon doubted Jesus was a prophet because he let a sinful woman touch him. Jesus read Simon's heart, proving that he was.","What did Jesus know about Simon? About the woman?","Jesus, you know my heart. I am forgiven much, so let me love much."],
+["Isaiah 53:1–3","Despised and Rejected","Isaiah foresaw the servant: “he is despised and rejected of men; a man of sorrows.”","How does Jesus' rejection comfort me when I am rejected?","Man of sorrows, thank you for being rejected so I could be accepted."]]},
+{p:"prophet",t:"The Prophet Still Speaks",s:"Jesus continues his prophetic work today through his Spirit and his written Word.",mv:["2 Timothy 3:16","All scripture is given by inspiration of God, and is profitable for doctrine, for reproof, for correction, for instruction in righteousness:"],live:"Keep a Bible where the family eats and read at least one verse aloud at one meal every day.",
+fam:{idea:"Jesus still speaks to us today through the Bible and by his Holy Spirit. The Bible is God's words written down for us.",q:["Who helps us understand the Bible?","What is your favourite Bible story?"],act:"Make bookmarks with 2 Timothy 3:16. Each child picks a “verse of the week” to mark."},
+d:[
+["John 14:15–26","He Shall Teach You","Jesus promised the Spirit would teach the disciples all things and bring his words to their remembrance.","What two things will the Spirit do (v. 26)?","Holy Spirit, teach me and bring Jesus' words to mind when I need them."],
+["John 16:7–15","Into All Truth","The Spirit convicts the world and glorifies Christ, taking what is his and showing it to us.","Whom does the Spirit glorify? How does that help me test teaching?","Spirit of truth, guide me into all truth and glorify Jesus in me."],
+["Acts 1:1–3; 2:42–47","All That Jesus Began to Teach","Luke says his Gospel told what Jesus began to do and teach. He continues through his church, which continued steadfastly in the apostles' doctrine.","What four things did the early church devote itself to?","Lord, make our home devoted to your word, fellowship, the breaking of bread and prayer."],
+["2 Timothy 1:5; 3:14–17","From a Child","Timothy knew the scriptures from childhood through his grandmother Lois and mother Eunice. All scripture is God-breathed and equips us.","What did Timothy's family give him? What will mine give my children?","Lord, help me fill my children with scripture from childhood."],
+["Hebrews 4:12–13","Quick and Powerful","God's word is sharper than any two-edged sword, discerning the thoughts and intents of the heart.","Has scripture recently exposed something in me?","Lord, let your word cut through my excuses and heal my heart."],
+["Hebrews 12:25–29","Refuse Not Him That Speaketh","The one who spoke on earth at Sinai now warns from heaven. Do not refuse him; serve with reverence.","How do I respond when God's word is uncomfortable?","Lord, I will not refuse you. Give me grace to serve you with reverence and godly fear."]]},
+{p:"prophet",t:"Prophets at Home: Our Witness",s:"Because Christ is our Prophet, we pass on his word, first in our own home and then to the world. This closes the Prophet unit.",mv:["Deuteronomy 6:6–7a","And these words, which I command thee this day, shall be in thine heart: And thou shalt teach them diligently unto thy children,"],live:"Use one of Deuteronomy 6:7's moments (a meal, a drive, bedtime, morning) to mention God naturally every day.",
+fam:{ref:"Review: Deut 18:15; Matt 17:5; John 1:14; Heb 1:1–2",idea:"UNIT REVIEW — Christ the Prophet: Jesus is God's final messenger and God's Word in person. He shows us the Father, and we listen and obey.",q:["What is a prophet?","Why is Jesus the greatest prophet?","How does Jesus speak to us today?"],act:"Teach-back night. You give a 10-minute summary of the Prophet unit from your journal. Then each child “teaches” one thing they remember. Celebrate with a special dessert."},
+d:[
+["Deuteronomy 6:4–9","Teach Them Diligently","Love God with all you are, then teach his words to your children when you sit, walk, lie down and rise up.","List the four teaching moments in verse 7. Which do I already use?","Lord, put your words in my heart first, and help me teach them diligently."],
+["Psalm 78:1–8","Tell the Generation to Come","Fathers tell their children God's works so the children will set their hope in God.","What works of God have I told my children about?","Father, let my children and grandchildren set their hope in you."],
+["Matthew 28:16–20","Teaching Them to Observe","Christ's commission includes “teaching them to observe all things whatsoever I have commanded you.”","Not just to know, but to observe. How do I teach obedience?","Lord Jesus, with your authority behind me, I will teach my family."],
+["Acts 1:6–8","Ye Shall Be Witnesses","The Spirit gives power to witness in Jerusalem (home), Judaea, Samaria and to the ends of the earth.","Who are the people in my “Jerusalem”?","Holy Spirit, fill me with power to be a witness at home, at work and beyond."],
+["1 Peter 3:13–17","Ready to Give an Answer","Sanctify Christ as Lord in your heart and be ready to give a reason for your hope, with meekness and fear.","Could I explain my hope in two minutes? Write it down.","Lord, make me ready to explain my hope gently and clearly."],
+["Colossians 3:16–17","Let the Word Dwell Richly","The word of Christ dwells richly among us as we teach, admonish and sing.","How can we add singing to our family time?","Lord, let your word dwell richly in our home through teaching and songs."]]},
+{p:"priest",t:"What Is a Priest?",s:"A priest represents people before God. He offers sacrifice, intercedes, teaches and blesses.",mv:["Numbers 6:24–26","The LORD bless thee, and keep thee: The LORD make his face shine upon thee, and be gracious unto thee: The LORD lift up his countenance upon thee, and give thee peace."],live:"Speak the Numbers 6 blessing over each child by name at bedtime every night.",
+fam:{idea:"A priest is a go-between who helps people come close to God. He brings gifts to God, prays for people and blesses them.",q:["What does a priest do?","Who is our great priest?"],act:"Start a new tradition: lay your hand on each child's head and speak the Numbers 6 blessing. Let them bless you back."},
+d:[
+["Hebrews 5:1–4","Taken from Among Men","A high priest is taken from among people and appointed by God to offer gifts and sacrifices for sins, and to deal gently with the ignorant.","List the qualifications of a priest in these verses.","Thank you, Lord, for a priest who deals gently with me."],
+["Exodus 28:1–4, 9–12, 29–30","Names on Shoulders and Heart","Aaron bore the names of Israel's tribes on his shoulders (strength) and over his heart (love) whenever he went in before God.","What does this picture say about how Jesus carries me?","Jesus, my High Priest, thank you for carrying my name on your heart. Let me carry my family's names in prayer."],
+["Leviticus 10:8–11","Put a Difference and Teach","Priests were to distinguish holy from common and clean from unclean, and to teach Israel God's statutes.","Priests were teachers too. What must I help my children distinguish?","Lord, give me discernment to teach my children what is holy."],
+["Malachi 2:4–7","The Priest's Lips","“The priest's lips should keep knowledge.” A faithful priest walked with God in peace and turned many from iniquity.","What four things marked Levi's faithfulness (v. 6)?","Lord, let truth be in my mouth, and let me walk with you in peace."],
+["Numbers 6:22–27","The Priestly Blessing","God gave priests words to bless his people, putting his name on them.","What six things does the blessing ask God to do?","Lord, bless my family, keep us, shine on us and give us peace."],
+["Deuteronomy 33:8–11","Toward God and Toward People","Moses' blessing on Levi: they teach Jacob God's judgments and put incense and offerings before God.","What two directions did a priest face?","Lord, make me faithful toward you in worship and toward my family in teaching."]]},
+{p:"priest",t:"Sacrifice from the Beginning",s:"From Eden onward, God taught that sin brings death and that a substitute can die in the sinner's place.",mv:["Genesis 22:8a","And Abraham said, My son, God will provide himself a lamb for a burnt offering:"],live:"Invite your children's questions this week. Keep a list of the ones you need to research.",
+fam:{idea:"Because sin is serious, something had to die in our place. God gave a lamb in the Old Testament, and later gave Jesus, the Lamb of God.",q:["What did God provide instead of Isaac?","What did the Israelites put on their doors?"],act:"Tell the Passover story with a strip of red paper over your doorframe. Answer Exodus 12:26 when your children ask, “What does this mean?”"},
+d:[
+["Genesis 3:7–10, 21","Coats of Skins","Fig leaves could not cover Adam and Eve. God clothed them with skins; something died to cover their shame.","Why were fig leaves not enough?","Lord, I cannot cover my own sin. Clothe me in Christ."],
+["Genesis 4:1–8","Cain and Abel","Abel offered the firstlings of his flock by faith (Heb 11:4). Cain's heart was wrong, and sin lay at the door.","What was the difference between the two offerings?","Lord, give me a heart of faith in worship, not mere routine."],
+["Genesis 8:15–22","Noah's Altar","After the flood Noah built an altar. God smelled a sweet savour and promised never again to curse the ground.","How does sacrifice relate to God's promise here?","Thank you, Father, for your faithful covenant after judgment."],
+["Genesis 22:1–14","God Will Provide","Abraham was ready to offer Isaac, but God provided a ram in his place. “In the mount of the LORD it shall be seen.”","How does this story foreshadow the Father giving his Son?","Father, thank you for providing the Lamb. Help me trust you with my children."],
+["Exodus 12:1–13","The Passover Lamb","A lamb without blemish, its blood on the door: “When I see the blood, I will pass over you.”","Why was blood on the door necessary for every household?","Lamb of God, cover our house with your blood."],
+["Exodus 12:21–28","When Your Children Shall Say","God expected children to ask, “What mean ye by this service?” and fathers to explain.","What questions do my children ask about faith? Am I ready?","Lord, make me ready to answer my children's questions about you."]]},
+{p:"priest",t:"The Tabernacle: God Dwelling with Us",s:"God designed a tent where a holy God could live among sinful people, a pattern of heavenly things.",mv:["Exodus 25:8","And let them make me a sanctuary; that I may dwell among them."],live:"Sketch the tabernacle floor plan in your journal and label how each part points to Christ.",
+fam:{idea:"God wanted to live with his people, so he told Moses to build a special tent. Every part of it pointed to Jesus!",q:["Why did God want a tent?","What colours was the curtain?"],act:"Build a “tabernacle” from blankets and chairs: a courtyard, a holy place (with a torch and bread), and a Most Holy Place behind a sheet. Walk through it and talk about each part."},
+d:[
+["Exodus 25:1–9","Make Me a Sanctuary","God's goal was to dwell among his people. The tabernacle was built from willing offerings, exactly to God's pattern.","Why did the pattern have to be exact (see Heb 8:5)?","Lord, dwell among us. Make our home a place you are pleased to live."],
+["Exodus 25:10–22","The Ark and the Mercy Seat","Above the ark holding the law was the mercy seat, where blood was sprinkled. God met sinners at the place of atonement.","What does it mean that the broken law was covered by the mercy seat?","Thank you, Lord, that mercy covers the law I have broken."],
+["Exodus 25:23–40","Table and Candlestick","Bread of the Presence and a golden lampstand stood in the holy place: pictures of Christ, the bread of life and the light of the world.","How do these furnishings point to Jesus' “I am” sayings?","Jesus, bread and light, feed and lighten my family."],
+["Exodus 26:31–37","The Veil","A veil of blue, purple and scarlet separated the Most Holy Place. Hebrews says the veil pictured Christ's flesh (Heb 10:20).","Why was there a barrier? What happened to it when Jesus died?","Thank you, Jesus, for opening the way to God."],
+["Exodus 27:1–8; 30:1–10","Two Altars","The bronze altar for sacrifice stood at the entrance. The golden altar of incense stood before the veil. Sacrifice first, then prayer.","What does the order teach about approaching God?","Lord, because of Christ's sacrifice, receive my prayers like incense."],
+["Hebrews 8:1–5; 9:1–5","Example and Shadow","The earthly tabernacle was a copy and shadow of the heavenly one, where Christ now ministers.","How does seeing the tabernacle as a shadow help me read the Old Testament?","Open my eyes to see Christ throughout the Old Testament."]]},
+{p:"priest",t:"The Offerings",s:"Leviticus' offerings show many sides of Christ's one sacrifice: total devotion, fellowship, forgiveness and restitution.",mv:["Hebrews 10:10","By the which will we are sanctified through the offering of the body of Jesus Christ once for all."],live:"Practise the guilt-offering principle: make one apology or restitution you have been putting off.",
+fam:{idea:"In the Old Testament people brought animals to God again and again. Jesus offered himself once, and that was enough forever.",q:["How many times did Jesus need to die for our sins?","What does “once for all” mean?"],act:"Draw many small tally marks (all the Old Testament sacrifices), then one big cross over them all. Colour the cross together."},
+d:[
+["Leviticus 1:1–9","The Burnt Offering","The whole animal was burnt: total devotion. The worshipper laid his hand on its head, identifying with it.","What does laying a hand on the animal picture?","Lord, I lay my hand on Jesus by faith. I give you my whole life."],
+["Leviticus 2:1–3; 3:1–5","Meat and Peace Offerings","The grain (“meat”) offering was a gift of thanks. The peace offering was a shared meal picturing fellowship with God.","How is the Lord's Supper like a peace-offering meal?","Thank you for peace and fellowship with you through Christ."],
+["Leviticus 4:27–35","The Sin Offering","Even an ordinary person's unintentional sin needed a sacrifice. “It shall be forgiven him.”","Why does God address unintentional sins too?","Lord, forgive the sins I don't even know I've committed."],
+["Leviticus 5:14–6:7","The Trespass Offering","Where harm was done, the guilty repaid it plus a fifth, then offered a sacrifice. Repentance includes making things right.","Is there someone I need to make restitution to?","Lord, give me humility to make things right with those I have wronged."],
+["Leviticus 17:10–14","The Life Is in the Blood","Blood represents life poured out. God gave it on the altar to make atonement.","Why does atonement require life?","Thank you, Jesus, for pouring out your life for mine."],
+["Hebrews 10:1–10","Once for All","Animal blood could never take away sins; it was a yearly reminder. Christ came to do God's will and offered his body once for all.","What is the difference between “every year” and “once for all”?","Jesus, thank you that your sacrifice is finished and complete."]]},
+{p:"priest",t:"The Day of Atonement",s:"Once a year the high priest entered the Most Holy Place with blood. Jesus fulfilled this day completely.",mv:["Hebrews 9:12","Neither by the blood of goats and calves, but by his own blood he entered in once into the holy place, having obtained eternal redemption for us."],live:"End each day by naming your sins honestly to God and thanking him for Christ's blood.",
+fam:{idea:"Once a year one priest went behind the curtain with blood to ask God to forgive everyone. Jesus is our High Priest who did this once, with his own blood, so we are forgiven forever.",q:["What did the scapegoat carry away?","Where did Jesus take his offering?"],act:"Write general sins on slips of paper (unkind words, disobeying). “Send them away” by tearing them up and throwing them out while you read Psalm 103:12."},
+d:[
+["Leviticus 16:1–10","Within the Veil","Only the high priest, only once a year, only with blood, and only after cleansing himself could enter God's presence.","What do all these restrictions teach about God's holiness?","Holy God, I stand in awe of you. Thank you for the way you made."],
+["Leviticus 16:11–19","Blood on the Mercy Seat","Aaron sprinkled blood for himself and for the people on the mercy seat to cleanse the sanctuary.","Why did Aaron need a sacrifice for himself first? Did Jesus?","Thank you, Jesus, sinless priest, that you needed no offering for yourself."],
+["Leviticus 16:20–34","The Scapegoat","The priest confessed Israel's sins over a live goat that carried them away into the wilderness.","What does the scapegoat picture about my sins (Ps 103:12)?","Lord, thank you for carrying my sins far away. I will not pick them up again."],
+["Hebrews 9:6–14","By His Own Blood","Christ entered the true holy place once, with his own blood, obtaining eternal redemption and purging our conscience.","What does the blood of Christ cleanse (v. 14)?","Cleanse my conscience, Lord, so I can serve you freely."],
+["Hebrews 9:15–28","Appearing for Us","Christ appears in God's presence for us, and will appear a second time to those who look for him.","Find the three “appearings” of Christ in vv. 24–28.","Jesus, thank you for appearing for me before the Father now."],
+["Romans 3:21–26","Propitiation","Paul uses the word for the mercy seat: God set forth Christ as the place where wrath is satisfied and mercy flows.","How does Paul connect the mercy seat to Jesus?","Thank you, Father, that Jesus is my mercy seat."]]},
+{p:"priest",t:"Aaron and the Priesthood",s:"Aaron's life is a living picture of the priesthood Jesus perfects.",mv:["Numbers 16:48","And he stood between the dead and the living; and the plague was stayed."],live:"Be a priest who stands between: each day, pray specifically for one person going through trouble.",
+fam:{idea:"Aaron ran between the people and the plague, and the plague stopped. Jesus stands between us and the punishment for sin.",q:["What did Aaron's rod do overnight?","Who stands between us and punishment?"],act:"Bring a dry stick and a fresh flower. Tell Numbers 17, and let the children “discover” the flower tied to the stick in the morning."},
+d:[
+["Exodus 28:36–43","Holiness to the LORD","Aaron's mitre bore a gold plate engraved “HOLINESS TO THE LORD,” so he could bear the iniquity of Israel's holy gifts.","How does Jesus' holiness make my imperfect worship acceptable?","Lord, my prayers are imperfect. Thank you that Jesus' holiness covers them."],
+["Exodus 29:19–21","Ear, Thumb and Toe","Blood was put on the priest's right ear, thumb and great toe, consecrating what he heard, what he did and where he walked.","What would it look like to consecrate my ears, hands and feet?","Lord, sanctify what I listen to, what I do and where I go."],
+["Leviticus 8:1–13","Consecration","Moses washed, clothed and anointed Aaron before the whole congregation.","Compare this with Jesus' baptism and anointing by the Spirit.","Thank you, Jesus, for being appointed as my High Priest."],
+["Leviticus 9:22–24","The Blessing and the Fire","After the sacrifices Aaron lifted his hands and blessed the people. God's glory appeared and fire fell.","What happened after the sacrifice and the blessing?","Lord, let your glory be seen in our home."],
+["Numbers 16:41–50","Standing Between","Aaron ran with incense into the plague and stood between the dead and the living. The plague stopped.","How is this a picture of Christ's intercession?","Jesus, thank you for standing between me and judgment."],
+["Numbers 17:1–11","Aaron's Rod Budded","God confirmed his chosen priest by making a dead rod bud, blossom and bear almonds overnight, a picture of resurrection life.","How does God confirm Jesus as priest (compare Heb 7:16)?","Risen Lord, bring life to the dry places in my heart."]]},
+{p:"priest",t:"A Priest Forever: Melchizedek",s:"Jesus is not a priest from Levi but “after the order of Melchizedek,” a priest-king whose priesthood never ends.",mv:["Psalm 110:4","The LORD hath sworn, and will not repent, Thou art a priest for ever after the order of Melchizedek."],live:"Each night this week, thank Jesus that he is praying for you right now (Heb 7:25).",
+fam:{idea:"Melchizedek was a king and a priest at the same time. He points to Jesus, who is our King and our Priest forever, and who never dies.",q:["What did Melchizedek bring Abraham?","Why is it good that Jesus lives forever?"],act:"Share bread and grape juice as Melchizedek did, and bless each child (Gen 14:19). Explain that Holy Week begins next Sunday."},
+d:[
+["Genesis 14:17–24","The King-Priest of Salem","Melchizedek, king of Salem (peace) and priest of the most high God, brought bread and wine and blessed Abram, who gave him a tenth.","Why is it remarkable that one man is both king and priest?","King of peace, thank you for coming to me with blessing."],
+["Psalm 110","Sit Thou at My Right Hand","David's Lord sits at God's right hand as King and is sworn in as Priest forever. This is the Old Testament passage the New Testament quotes most.","Find both offices in this psalm.","Lord Jesus, you are my King and Priest forever. I bow before you."],
+["Hebrews 5:5–10","Learned Obedience","Christ did not glorify himself; the Father appointed him. With strong crying and tears he prayed, and learned obedience through suffering.","What does it mean that Jesus “learned obedience”?","Jesus, when I suffer, help me obey as you did."],
+["Hebrews 6:13–20","An Anchor Within the Veil","God's promise and oath give us hope, an anchor that enters within the veil where Jesus went ahead of us.","What is my hope anchored to?","Lord, anchor my soul in you through every storm."],
+["Hebrews 7:1–10","Greater Than Abraham","With no recorded beginning or end, Melchizedek resembles the Son of God. Even Levi, in Abraham, paid him tithes.","Why does Hebrews argue Melchizedek is greater than Levi?","Thank you for a priesthood greater than any earthly one."],
+["Hebrews 7:11–28","The Power of an Endless Life","The Levitical priests died. Jesus lives forever, so he saves to the uttermost and ever lives to intercede.","What is the practical comfort of a priest who never dies?","Jesus, you ever live to pray for me. I rest in you."]]},
+{p:"priest",t:"Holy Week: The Priest Offers Himself",s:"In the week of his passion, Jesus acts as the true priest, and offers himself as the sacrifice.",mv:["Isaiah 53:5","But he was wounded for our transgressions, he was bruised for our iniquities: the chastisement of our peace was upon him; and with his stripes we are healed."],live:"Fast one meal on Good Friday if your health allows, and use the time to pray through Isaiah 53.",
+fam:{ref:"Mark 15:33–39",idea:"When Jesus died, the big temple curtain tore from top to bottom. God opened the way for us to come to him, because Jesus paid for our sins.",q:["Why did the curtain tear from top to bottom, not bottom to top?","What did Jesus mean when he said, “It is finished”?"],act:"Hang a paper “curtain” across a doorway. Tell the story, then tear it from top to bottom and let everyone walk through. Keep the tone quiet and reverent."},
+d:[
+["John 12:12–33","A Corn of Wheat (Palm Sunday)","The crowd welcomed a king, but Jesus spoke of a seed that must die to bear much fruit: “I, if I be lifted up… will draw all men unto me.”","What was Jesus' “hour”? Why did he not ask to be saved from it?","Lord, I welcome you as King. Teach me the way of the grain of wheat."],
+["Mark 11:15–19","A House of Prayer","Jesus cleansed the temple, zealous that it be a house of prayer for all nations.","What needs cleansing in my own temple (1 Cor 6:19)?","Lord Jesus, cleanse my heart and home. Make them houses of prayer."],
+["Isaiah 52:13–53:12","The Suffering Servant","The servant is wounded for our transgressions, bears our sin, becomes an offering for sin, and makes intercession for transgressors: priest and sacrifice.","Count how often “our” or “us” appears.","Thank you, Jesus. You were wounded for my transgressions."],
+["John 17:1–26","The High Priestly Prayer","On the night before the cross, Jesus prays for himself, for his disciples and for all future believers, including you.","Find the verse where Jesus prays for me (v. 20). What does he ask?","Father, answer your Son's prayer in me: keep me, sanctify me, make us one."],
+["Luke 22:7–23","The New Testament in My Blood (Maundy Thursday)","At Passover Jesus reinterprets the meal: the bread is his body, the cup his blood of the new covenant.","Why did Jesus choose the Passover to explain his death?","Jesus, thank you for giving your body and blood for me."],
+["John 19:16–30","It Is Finished (Good Friday)","Jesus the priest offers himself. His last cry, tetelestai, means “paid in full.”","What exactly was finished?","Lord Jesus, I rest in your finished work. Nothing I add can complete it."]]},
+{p:"priest",t:"Easter: The Priest Who Lives",s:"The resurrection proves the Father accepted the sacrifice. Our priest lives!",mv:["Romans 4:25","Who was delivered for our offences, and was raised again for our justification."],live:"Share the gospel of 1 Corinthians 15:3–4 with one person this week.",
+fam:{idea:"Jesus didn't stay dead! He rose again, which shows God accepted his sacrifice for us. He is alive and praying for us right now.",q:["Who first saw the risen Jesus?","What does the empty tomb show us?"],act:"Make an “empty tomb” from an upturned bowl and a stone. Go on a walk and practise the Easter greeting: “He is risen!” — “He is risen indeed!”"},
+d:[
+["Matthew 28:1–10","He Is Risen (Easter Sunday)","The angel rolled back the stone to show the tomb was empty. The women ran with fear and great joy.","Why is the empty tomb essential to our faith?","Hallelujah! Christ is risen. Fill our home with resurrection joy."],
+["John 20:1–18","Go to My Brethren","The risen Jesus calls Mary by name and sends her with a message: “my Father, and your Father.”","What changes when Jesus says “your Father”?","Thank you, Jesus, for calling me by name and making your Father my Father."],
+["Luke 24:36–49","Handle Me and See","Jesus eats fish to show he is bodily risen, opens their understanding of the scriptures, and commissions them.","Why does Jesus eat in front of them?","Risen Lord, open my mind to understand the scriptures."],
+["1 Corinthians 15:1–20","First of All","The gospel: Christ died for our sins, was buried, and rose again the third day. If not, our faith is vain.","Memorise vv. 3–4 as the gospel in a nutshell.","Lord, I hold fast to the gospel of first importance."],
+["Romans 4:23–5:11","Raised for Our Justification","Jesus was delivered for our offences and raised for our justification. Now we have peace, access and hope.","What are the “therefore” blessings of 5:1–2?","Thank you, Father, for peace with you through Jesus."],
+["Hebrews 10:11–14; 13:20–21","He Sat Down","Priests stood daily because their work was never done. Christ sat down, his work complete, and the God of peace brought him again from the dead.","What does Jesus sitting down tell me?","God of peace, make me perfect in every good work to do your will."]]},
+{p:"priest",t:"The Lamb of God",s:"From Passover to Revelation, the Lamb stands at the centre of God's plan.",mv:["John 1:29b","Behold the Lamb of God, which taketh away the sin of the world."],live:"Sing or play one song about the Lamb of God each day this week.",
+fam:{idea:"Jesus is called the Lamb of God because, like the Passover lamb, he died so we could be saved. In heaven everyone sings, “Worthy is the Lamb!”",q:["Why is Jesus called a Lamb?","What do people sing in heaven?"],act:"Make cotton-ball lambs and write “Behold the Lamb of God” on them. Sing a worship song together."},
+d:[
+["John 1:29–37","Behold the Lamb","John the Baptist twice points to Jesus as the Lamb of God, and two of his disciples follow Jesus.","What did John's disciples do after hearing this?","Lamb of God, I behold you. Make me a follower."],
+["Exodus 12:43–51; John 19:31–37","Not a Bone Broken","The Passover lamb's bones were not to be broken. John notes this was fulfilled at the cross.","What does this detail show about God's control of history?","Lord, thank you that every detail of your word is fulfilled."],
+["1 Corinthians 5:6–8","Christ Our Passover","Christ our Passover is sacrificed, so we purge out the old leaven of malice and live in sincerity and truth.","What “leaven” needs removing from my life?","Jesus, our Passover, cleanse the malice and pride out of our home."],
+["1 Peter 1:17–21","Precious Blood","We were redeemed not with silver and gold but with the precious blood of Christ, a lamb without blemish, foreordained before the world.","What does it mean that this plan was set “before the foundation of the world”?","Thank you, Father, for paying so great a price for me."],
+["Revelation 5:1–10","Worthy Is the Lamb","John is told to look for a Lion and sees a Lamb that was slain, worthy because he redeemed people from every nation.","Why is the Lion also a Lamb?","Worthy are you, Lamb of God. Receive my worship."],
+["Revelation 7:9–17","The Lamb Shall Feed Them","A multitude washed in the Lamb's blood serve before God. The Lamb shepherds them and God wipes away every tear.","What comfort does verse 17 give to grieving people?","Lamb and Shepherd, lead my family to living waters."]]},
+{p:"priest",t:"What the Cross Achieved",s:"Scripture uses many pictures for our priest's work on the cross: ransom, reconciliation, substitution, redemption, propitiation and victory.",mv:["2 Corinthians 5:21","For he hath made him to be sin for us, who knew no sin; that we might be made the righteousness of God in him."],live:"Pick one of the six pictures of the cross and explain it to someone in plain words.",
+fam:{idea:"The cross is like a diamond with many sides. Jesus paid our price, made us friends with God, took our place, and beat the devil.",q:["What does “ransom” mean?","What does it mean that Jesus took our place?"],act:"Write a pretend bill: “I owe a million dollars.” Write PAID IN FULL across it in red and pin it to a small cross."},
+d:[
+["Mark 10:35–45","A Ransom for Many","The Son of Man came to serve and to give his life a ransom, the price paid to free captives.","From what were we held captive?","Jesus, thank you for paying my ransom. Make me a servant like you."],
+["Romans 5:6–11","Reconciliation","While we were without strength, sinners and enemies, Christ died for us. Enemies are made friends.","Which three words describe us before reconciliation?","Father, thank you for making me your friend. Help me reconcile with others."],
+["2 Corinthians 5:14–21","Substitution","God made him who knew no sin to be sin for us, so we might be made God's righteousness in him. Now we are ambassadors.","What “great exchange” happens in verse 21?","Jesus, you took my sin; I receive your righteousness. Make me your ambassador."],
+["Galatians 3:10–14","Redeemed from the Curse","Christ became a curse for us by hanging on a tree, so the blessing of Abraham comes to us.","What curse did Christ carry?","Thank you, Lord, that I am blessed and not cursed because of you."],
+["1 John 2:1–2; 4:9–10","Propitiation","Jesus is our advocate and the propitiation for our sins, the sacrifice that turns away God's wrath. Herein is love.","How does John define love?","Father, your love sent Jesus. Let that love overflow in me."],
+["Colossians 2:13–15","Victory","God blotted out the handwriting against us, nailing it to the cross, and spoiled the principalities and powers, triumphing over them.","What was nailed to the cross? Who was defeated?","Thank you, Jesus, that my debt is cancelled and the enemy defeated."]]},
+{p:"priest",t:"The Priest Who Sympathizes",s:"Our High Priest became like us in every way except sin, so he understands and helps.",mv:["Hebrews 4:16","Let us therefore come boldly unto the throne of grace, that we may obtain mercy, and find grace to help in time of need."],live:"When a family member struggles this week, stop and pray with them on the spot.",
+fam:{idea:"Jesus knows exactly how we feel. He was tired, sad and tempted, but he never sinned. So we can go to him with anything.",q:["What did Jesus say when he was tempted?","What can you tell Jesus about?"],act:"Each person shares one hard thing from the week. Pray for each one together, then read Hebrews 4:16 aloud."},
+d:[
+["Hebrews 2:9–18","Made Like unto His Brethren","Jesus shared our flesh and blood to destroy death and become a merciful and faithful High Priest.","Why did Jesus have to become fully human to be our priest?","Jesus, thank you for becoming my brother. Help me when I am tempted."],
+["Hebrews 4:14–16","Come Boldly","Our High Priest is touched with the feeling of our infirmities, having been tempted in all points yet without sin.","What keeps me from approaching God with confidence?","Lord, I come boldly for mercy and grace for today's need."],
+["Hebrews 5:7–9","Strong Crying and Tears","In the days of his flesh Jesus prayed with strong crying and tears. He knows anguish in prayer.","How does this change how I pray in hard times?","Jesus, you know my tears. Hear my cries."],
+["Matthew 4:1–11","Tempted in the Wilderness","Where Adam fell in a garden and Israel in the wilderness, Jesus stood firm, answering each temptation with scripture.","What weapon did Jesus use each time?","Lord, store your word in me so I can stand in temptation."],
+["Matthew 26:36–46","Gethsemane","Jesus wrestled in prayer: “Not as I will, but as thou wilt.” He asked his friends to watch with him.","What does Jesus' prayer teach me about surrender?","Father, not my will but yours be done in my life and family."],
+["John 11:32–36","Jesus Wept","Standing with grieving friends, Jesus groaned in spirit and wept.","What does Jesus' weeping teach me about how he feels my pain?","Lord, thank you for weeping with me. Help me weep with those who weep."]]},
+{p:"priest",t:"The Priest Who Intercedes",s:"Jesus' priestly work continues. He prays for us now at the Father's right hand.",mv:["Hebrews 7:25","Wherefore he is able also to save them to the uttermost that come unto God by him, seeing he ever liveth to make intercession for them."],live:"Start a family prayer list on the fridge and pray through it together three times this week.",
+fam:{idea:"Right now, in heaven, Jesus is praying for us! He prayed for Peter and he prays for you.",q:["What did Jesus pray for Peter?","Who can we pray for this week?"],act:"Make a family prayer wall on the fridge with names and needs. Add a column headed “God answered!”"},
+d:[
+["Luke 22:31–34","I Have Prayed for Thee","Jesus knew Peter would fail, yet he prayed that his faith would not fail and planned his restoration.","How does it help to know Jesus prays for me before I fail?","Jesus, thank you for praying for me. Strengthen my faith."],
+["John 21:15–19","Feed My Sheep","Jesus restored Peter three times and gave him a shepherd's task.","What does Jesus' restoring grace teach me about restoring my children?","Lord, restore me where I've failed, and use me to feed your lambs."],
+["Romans 8:26–34","Who Is He That Condemneth?","The Spirit intercedes within us, and Christ intercedes at God's right hand. No one can condemn.","Two intercessors: where is each?","Thank you, Spirit and Son, for praying for me."],
+["Romans 8:35–39","Nothing Shall Separate","Because Christ intercedes, nothing can separate us from the love of God.","Which item in Paul's list feels most real to me right now?","Lord, I rest in your love. Nothing can separate us from it."],
+["Hebrews 7:23–28","He Ever Liveth","Jesus holds an unchangeable priesthood and saves to the uttermost those who come to God by him.","What does “to the uttermost” mean for me?","Jesus, save me to the uttermost, and keep praying for my children."],
+["1 Timothy 2:1–6","One Mediator","There is one God and one mediator, the man Christ Jesus. So we pray for all people, including those in authority.","Why can no one else be our mediator?","Thank you for Jesus, the only mediator. I pray for our leaders and nation."]]},
+{p:"priest",t:"The New Covenant",s:"Our priest mediates a better covenant with better promises: sins forgiven and God's law written on the heart.",mv:["Jeremiah 31:33b","I will put my law in their inward parts, and write it in their hearts; and will be their God, and they shall be my people."],live:"Before your next communion, set aside a session to examine your heart with 1 Corinthians 11.",
+fam:{idea:"God made a new promise: he would give us new hearts and forgive our sins forever. Jesus sealed that promise with his blood, and went up to heaven blessing his friends.",q:["Where does God write his law in the new covenant?","What was Jesus doing as he went up to heaven?"],act:"Give each child a paper heart. Write “I will write it in their hearts” on it. Talk about how God changes us from the inside."},
+d:[
+["Jeremiah 31:31–34","A New Covenant","God promised a covenant written on hearts, where all know him and sins are remembered no more.","What four promises are in this covenant?","Lord, write your law on my heart and my children's hearts."],
+["Ezekiel 36:25–28","A New Heart","God will cleanse his people, give a new heart and spirit, and put his Spirit within them.","What does a heart of stone look like? A heart of flesh?","Lord, take away every heart of stone in our house."],
+["Hebrews 8:1–13","A Better Covenant","Jesus ministers in the true tabernacle as mediator of a better covenant, established on better promises.","Why was the first covenant not enough?","Thank you, Jesus, for better promises."],
+["1 Corinthians 11:23–32","This Do in Remembrance","The Lord's Supper shows his death till he comes. Let a man examine himself before he eats.","How should I prepare for communion?","Lord, as I remember you, search me and make me ready."],
+["Luke 24:44–53","Blessing, He Ascended (Ascension Day)","Jesus lifted up his hands like Aaron and blessed them, and while he blessed them he was carried up into heaven. Our priest's last act on earth was blessing.","What does it mean that Jesus left while blessing?","Ascended Lord, thank you that your hands are still raised over me in blessing."],
+["2 Corinthians 3:4–18","Able Ministers of the New Testament","Our sufficiency is of God. We behold the Lord's glory and are changed into the same image.","Where does my adequacy to teach come from (vv. 5–6)?","Lord, my sufficiency is from you. Change me from glory to glory."]]},
+{p:"priest",t:"The Veil Torn: Access to God",s:"Because our priest opened the way, we may draw near to God with confidence.",mv:["Hebrews 10:22a","Let us draw near with a true heart in full assurance of faith,"],live:"Take one extra 10-minute prayer walk this week simply to enjoy God's presence.",
+fam:{idea:"Before Jesus, only one priest could go near God, once a year. Now, because of Jesus, anyone, even kids, can talk to God any time!",q:["Who could go into the Most Holy Place before Jesus?","When can you talk to God now?"],act:"Let each child pray a short prayer in their own words. Celebrate that they spoke directly to the King of the universe."},
+d:[
+["Matthew 27:45–54","Rent in Twain","At Jesus' death the veil of the temple was torn from the top to the bottom: God's own act, opening the way.","What did the centurion confess?","Thank you, Father, for tearing the veil. I come near."],
+["Hebrews 10:19–25","Let Us Draw Near","With a new and living way opened, draw near, hold fast, and consider one another, not forsaking assembling together.","Find the three “let us” statements.","Lord, help me draw near, hold fast and encourage others."],
+["Ephesians 2:11–22","Made Nigh","Those far off are made near by Christ's blood. The wall of hostility is broken down and we become God's temple.","What walls has Christ broken down in my relationships?","Lord, break down walls in our home and make us one."],
+["Romans 5:1–5","Access into Grace","Through Christ we have access into grace wherein we stand, and hope that does not make ashamed.","What does tribulation produce, according to Paul?","Lord, use our trials to produce patience, experience and hope."],
+["Hebrews 12:18–24","Mount Sion, Not Sinai","We have not come to a terrifying mountain but to Sion, to Jesus, and to blood that speaks better things than Abel's.","What does Abel's blood say? What does Jesus' blood say?","Thank you that Jesus' blood speaks mercy over me."],
+["Revelation 21:1–7, 22–27","No Temple Therein","In the new creation there is no temple, for God and the Lamb are its temple. God dwells with his people forever.","How does the Bible's story end the way it began in Eden?","Come, Lord Jesus. We long to dwell with you forever."]]},
+{p:"priest",t:"Pentecost: The Ascended Priest Pours Out the Spirit",s:"From heaven our priest-king gives his Spirit, and a priestly people is born.",mv:["Acts 2:39","For the promise is unto you, and to your children, and to all that are afar off, even as many as the Lord our God shall call."],live:"Pray Acts 2:39 over each child by name every day this week.",
+fam:{idea:"After Jesus went back to heaven, he sent the Holy Spirit to live inside believers. The Spirit helps us know Jesus and tell others about him.",q:["What did people see and hear at Pentecost?","What does the Holy Spirit help us do?"],act:"Blow bubbles or a pinwheel to talk about wind: invisible, but with real effects, like the Spirit. Pray for the Spirit to fill each person."},
+d:[
+["Acts 2:1–13","Cloven Tongues of Fire (Pentecost)","The Spirit comes with wind and fire, and the disciples declare the wonderful works of God in many languages.","Why is it fitting that the Spirit's first gift was speech about God?","Holy Spirit, fill me afresh so I declare God's works at home."],
+["Acts 2:29–41","Exalted, He Hath Shed Forth This","Peter says the exalted Jesus received the Spirit from the Father and poured him out. The promise is “unto you, and to your children.”","Who is the promise for (v. 39)?","Lord, the promise is for my children too. Pour out your Spirit on them."],
+["John 7:37–39","Rivers of Living Water","Jesus promised rivers flowing from within believers: the Spirit, given once Jesus was glorified.","How does a river differ from a pond?","Lord, let rivers of living water flow from me to my family."],
+["Acts 3:22–26","Sent to Bless You","God raised up his Son and sent him to bless you, in turning away every one of you from your iniquities.","What does Jesus' blessing look like, according to verse 26?","Jesus, bless me by turning me from every sin."],
+["Ephesians 1:3–14","All Spiritual Blessings","Chosen, adopted, redeemed, forgiven, sealed with the Spirit, all “in Christ.”","Count the blessings that are “in him.”","Blessed be God for every blessing I have in Christ."],
+["Psalm 133; 1 John 2:20, 27","Ointment upon the Head","The anointing oil ran from Aaron's head down to his garments. The Spirit flows from Christ our head to his whole body.","How does the image of oil flowing down describe the Spirit and the church?","Anointing Spirit, flow from Christ through me to my household."]]},
+{p:"priest",t:"A Kingdom of Priests",s:"Christ's priesthood creates a priestly people. Every believer offers spiritual sacrifices.",mv:["1 Peter 2:9","But ye are a chosen generation, a royal priesthood, an holy nation, a peculiar people; that ye should shew forth the praises of him who hath called you out of darkness into his marvellous light:"],live:"As a family, give a sacrificial gift of time, food or money to someone in need.",
+fam:{idea:"Because of Jesus, every believer is a priest! We offer God our praise, our kindness and our lives.",q:["What “sacrifices” can a child give to God?","How can we be priests at school or with friends?"],act:"Plan a family offering project: bake for a neighbour, write cards to someone lonely, or give from savings. Do it this week."},
+d:[
+["Exodus 19:3–6","A Peculiar Treasure","At Sinai God called Israel to be a kingdom of priests and a holy nation.","What were Israel's privileges and purpose?","Lord, make our family your treasure and a priestly household."],
+["1 Peter 2:4–10","A Royal Priesthood","We are living stones built into a spiritual house, a holy priesthood offering spiritual sacrifices.","What is our purpose, according to verse 9?","Lord, I will show forth the praises of him who called me out of darkness."],
+["Romans 12:1–2","A Living Sacrifice","Present your bodies a living sacrifice, which is your reasonable service. Be transformed by the renewing of your mind.","What part of my life have I not yet offered?","Lord, I offer my body, my time and my work to you today."],
+["Hebrews 13:10–16","The Sacrifice of Praise","Through Jesus we offer a sacrifice of praise, and we do good and share, sacrifices that please God.","Name the spiritual sacrifices in these verses.","Lord, receive my praise, my good deeds and my generosity."],
+["Philippians 4:14–20; 2:17","An Odour of a Sweet Smell","Paul calls the Philippians' gift a fragrant offering, and his own life a drink offering poured out.","What gift could our family give this week as an offering?","Lord, let our giving be a fragrant offering to you."],
+["Revelation 1:5–6; 5:9–10","Kings and Priests unto God","The Lamb has made us kings and priests, and we shall reign on the earth.","How does this destiny shape how I live now?","Glory to the Lamb who made us kings and priests."]]},
+{p:"priest",t:"The Family Altar",s:"A father is a priest in his home: praying, interceding and leading worship. This closes the Priest unit.",mv:["Joshua 24:15b","but as for me and my house, we will serve the LORD."],live:"Set a fixed time for a short nightly family altar (verse, prayer, blessing in 5–10 minutes) and keep it.",
+fam:{ref:"Review: Heb 4:14–16; 7:25; 9:12; 1 Pet 2:9",idea:"UNIT REVIEW — Christ the Priest: Jesus offered himself once for our sins, opened the way to God, prays for us now, and blesses us. Because of him, our family is a family of priests.",q:["What did a priest do in the Old Testament?","What sacrifice did Jesus offer?","What is Jesus doing for us right now?"],act:"Teach-back night. You give a 10-minute summary of the Priest unit. Let each child explain one picture (lamb, veil, altar, blessing). End with the Numbers 6 blessing over everyone."},
+d:[
+["Job 1:1–5","Thus Did Job Continually","Job rose early and offered sacrifices for each child, in case they had sinned.","What does Job's habit teach me about interceding for my children?","Lord, make me a faithful, early-rising intercessor for my children."],
+["Joshua 24:14–15","Choose You This Day","Joshua called Israel to choose, and declared his household's choice to serve the LORD.","What would it mean to say this publicly and practically?","Lord, as for me and my house, we will serve you."],
+["Psalm 141:1–4","Prayer as Incense","David asks that his prayer rise like incense and his lifted hands like the evening sacrifice, and that God guard his mouth.","Why is evening a good time for a family altar?","Let my prayer rise before you as incense, and guard my words at home."],
+["1 Samuel 12:19–25","God Forbid That I Should Cease","Samuel called it sin to stop praying for the people, and promised to keep teaching them the good and right way.","Is there someone I have stopped praying for?","Lord, forbid that I should cease praying for my family."],
+["James 5:13–18","Confess and Pray","Confess your faults one to another and pray for one another. The effectual fervent prayer of a righteous man availeth much.","How can I model confession for my children?","Lord, give me humility to confess and faith to pray powerfully."],
+["Ephesians 6:18–20","Praying Always","Pray always in the Spirit, for all saints, and for boldness to make known the gospel.","What would “praying always” look like in my workday?","Lord, make prayer the rhythm of my day and give me boldness."]]},
+{p:"king",t:"God the Great King",s:"Before Israel had a king, the LORD was their King. All true kingship flows from his.",mv:["Psalm 145:13a","Thy kingdom is an everlasting kingdom, and thy dominion endureth throughout all generations."],live:"Lead with humility at work this week: ask for input before deciding, and give credit to others.",
+fam:{idea:"God is the greatest King of all. He rules over everything: kings, countries, weather and our family.",q:["What did Israel ask Samuel for?","Who is the real King over everything?"],act:"Make paper crowns and write “God is King” on each. Talk about who is in charge at home, at school and in our country, and who is over them all."},
+d:[
+["Exodus 15:1–18","The LORD Shall Reign","After the Red Sea, Moses' song ends: “The LORD shall reign for ever and ever.”","What did God do that proved he is King?","LORD, you reign forever. I trust your power over every enemy."],
+["1 Samuel 8:1–22","Make Us a King","Israel demanded a king like the nations. God said, “They have rejected me, that I should not reign over them.”","Why was their request a rejection of God?","Lord, forgive me when I want to be like everyone else instead of trusting you."],
+["Psalm 93","The LORD Reigneth","The floods lift up their voice, but the LORD on high is mightier than many waters.","What “floods” are rising in my life right now?","Lord, you are mightier than every flood I face."],
+["Psalm 47","King of All the Earth","Clap your hands, all ye people. God is King over the nations and sits on his holy throne.","Why should the nations rejoice that God is King?","Lord, I praise you as King of all the earth."],
+["Psalm 145:1–13","One Generation to Another","One generation shall praise God's works to another and speak of the glory of his kingdom.","How is verse 4 a charge for my family?","Lord, let me praise your works to my children, and they to theirs."],
+["Daniel 4:28–37","The Most High Ruleth","The proud emperor was humbled until he confessed that the Most High rules over the kingdoms of men.","What does pride look like in a leader? In me?","Lord, humble my pride. You rule, not me."]]},
+{p:"king",t:"Kings Who Failed",s:"Israel's kings showed that no merely human king could save. The people needed a righteous King.",mv:["1 Samuel 15:22b","Behold, to obey is better than sacrifice, and to hearken than the fat of rams."],live:"Identify one area of partial obedience and finish it this week.",
+fam:{idea:"Even the best human kings made big mistakes. We need a perfect King, and that is Jesus.",q:["What did Saul do wrong?","Why is Jesus a better king than David or Solomon?"],act:"Tell the story of Nathan and David with a toy lamb. Practise saying sorry the way David did: “I have sinned.”"},
+d:[
+["Deuteronomy 17:14–20","The Law of the King","A king must not multiply horses, wives or gold, and must copy and read God's law daily so his heart is not lifted above his brothers.","Which of these warnings applies to leaders today, and to me?","Lord, keep my heart humble and in your word daily as I lead."],
+["1 Samuel 15:10–26","Obedience Is Better","Saul partly obeyed and made excuses. God rejected him as king.","What excuses did Saul give? What partial obedience do I practise?","Lord, I want full obedience, not excuses."],
+["2 Samuel 11:1–17","David's Fall","At home when he should have been at war, David sinned and tried to cover it up.","What steps led David from temptation to murder?","Lord, guard my eyes, my idle time and my integrity."],
+["2 Samuel 12:1–13","Thou Art the Man","Nathan the prophet confronted the king. David confessed, “I have sinned against the LORD.”","A prophet correcting a king: how do I receive correction?","Lord, give me a teachable heart when others confront me."],
+["1 Kings 11:1–13","Solomon's Heart Turned","Wise Solomon broke every warning in Deuteronomy 17, and his heart was turned from God.","How can a wise, blessed person drift?","Lord, keep me faithful to the end."],
+["2 Chronicles 26:16–21","The King Who Tried to Be Priest","Uzziah grew proud and burned incense, a priest's task, and was struck with leprosy. Only Christ may hold both offices.","Why could no king of Israel be a priest?","Jesus, you alone are King and Priest. I bow to you."]]},
+{p:"king",t:"The Promise to David",s:"God swore to David that his son would reign forever. Jesus is that Son.",mv:["2 Samuel 7:16","And thine house and thy kingdom shall be established for ever before thee: thy throne shall be established for ever."],live:"Trace your family's spiritual heritage: write down who passed faith on to you, and thank God for them.",
+fam:{idea:"God promised King David that someone from his family would be King forever. That someone is Jesus!",q:["What did David want to build for God?","What did God promise to build for David?"],act:"Draw a simple family tree from David to Jesus using Matthew 1. Then draw your own family tree and pray that it will be full of people who follow Jesus."},
+d:[
+["2 Samuel 7:1–17","An House for Ever","David wanted to build God a house. God promised to build David a house: a dynasty and a throne forever.","What does God promise about David's seed?","Lord, thank you that your promises outlast every generation."],
+["Psalm 89:19–37","My Covenant Shall Stand Fast","God swore by his holiness that David's line would endure like the sun.","What happens when David's sons sin, according to vv. 30–34?","Faithful God, you never break your word."],
+["Jeremiah 23:5–6","The LORD Our Righteousness","God will raise up a righteous Branch from David who reigns wisely and is called “THE LORD OUR RIGHTEOUSNESS.”","What does this name tell me about the King?","Lord our Righteousness, you are my righteousness."],
+["Amos 9:11–15","The Tabernacle of David","God will raise up David's fallen tent. Acts 15:16 quotes this about Gentiles joining God's people.","How does this include people like me?","Thank you, Lord, for including all nations in David's kingdom."],
+["Luke 1:30–33","The Throne of His Father David","Gabriel announces that Jesus will receive David's throne and reign forever.","Which words echo 2 Samuel 7?","Jesus, reign forever in my life and family."],
+["Acts 13:26–39","The Sure Mercies of David","Paul preaches that God raised Jesus, fulfilling the promise of the sure mercies of David.","How does the resurrection fulfil the promise of a forever King?","Risen King, thank you for forgiveness and freedom through you."]]},
+{p:"king",t:"The Royal Psalms",s:"The Psalms sing of God's anointed King, and the New Testament applies them to Jesus.",mv:["Psalm 24:10","Who is this King of glory? The LORD of hosts, he is the King of glory."],live:"Pray Psalm 72 for your nation's leaders and for your own leadership at work.",
+fam:{idea:"The Bible has songs about a King who is fair, strong and kind to the poor. Jesus is the King those songs are about.",q:["Who is the King of glory?","What does the good King do for poor people?"],act:"March around the house. Before each door, call out Psalm 24:7 and answer with 24:10, then open the door and march through."},
+d:[
+["Psalm 2","Thou Art My Son","The nations rage against the LORD and his Anointed, but God has set his King on Zion. “Kiss the Son.”","Where is this psalm quoted of Jesus (Acts 4:25–28; Heb 1:5)?","Lord, the nations rage, but you reign. I take refuge in your Son."],
+["Psalm 72:1–11","Judgment for the Poor","The ideal King judges with righteousness, defends the poor, and rules from sea to sea.","What kind of justice does this King bring?","King Jesus, bring justice for the poor and needy in our city."],
+["Psalm 72:12–20","Precious Shall Their Blood Be","The King delivers the needy; their blood is precious in his sight. All nations shall be blessed in him.","How does verse 14 reveal the King's heart?","Lord, make me care for the needy as you do."],
+["Psalm 24","The King of Glory","Who shall ascend God's hill? He that hath clean hands and a pure heart. Lift up your heads, O ye gates.","Who alone truly has clean hands and a pure heart?","King of glory, come in. Open the gates of my heart."],
+["Psalm 45:1–7","Thy Throne, O God","A wedding song to the King whose throne is forever. Hebrews 1:8 applies it to the Son.","What does the King love and hate (v. 7)?","Lord, make me love righteousness and hate wickedness."],
+["Psalm 21:1–7","The King Trusteth in the LORD","The king rejoices in God's strength, receives a crown of pure gold and length of days forever, because he trusts in the LORD.","What is the secret of this king's stability (v. 7)?","Lord, I trust in you and will not be moved."]]},
+{p:"king",t:"The King Is Born",s:"Matthew presents Jesus as the Son of David, King of the Jews, who announces God's kingdom.",mv:["Mark 1:15","The time is fulfilled, and the kingdom of God is at hand: repent ye, and believe the gospel."],live:"On Independence Day, pray for your nation and thank God for citizenship in a greater kingdom.",
+fam:{idea:"Jesus was born a King! Wise men came from far away to worship him. He came to bring God's kingdom.",q:["What did the wise men ask when they came to Jerusalem?","What gifts did they bring?"],act:"Talk about countries and citizenship. Make a “Kingdom of Heaven passport” for each child with their name and Colossians 1:13."},
+d:[
+["Matthew 1:1–17","Son of David","Matthew opens by naming Jesus the son of David and son of Abraham, the royal line, including surprising names like Rahab and Ruth.","Why might Matthew include outsiders and sinners?","Lord, thank you that your family line includes the unlikely, even me."],
+["Matthew 2:1–12","Born King of the Jews","The wise men seek the King of the Jews and worship him. Herod feels threatened.","Why does one king plot while strangers worship?","King Jesus, I come to worship you with my gifts."],
+["Matthew 2:13–23","Out of Egypt","The King's life is preserved through Joseph's obedience. Like Israel, he comes out of Egypt.","What did Joseph do each time God spoke?","Lord, make me quick to obey, to protect my family."],
+["Matthew 3:13–17","This Is My Beloved Son","The Spirit descends and the Father speaks, echoing Psalm 2 (the King) and Isaiah 42 (the Servant).","Which two Old Testament passages does the Father's voice echo?","Father, thank you for anointing your Son as my King."],
+["Matthew 4:12–25","The Kingdom of Heaven Is at Hand","Jesus begins preaching the kingdom, calls fishermen to follow, and heals all manner of sickness.","What did the fishermen leave behind?","Lord, I leave my nets to follow you."],
+["Mark 1:14–15; Luke 17:20–21","Repent and Believe","The time is fulfilled; the kingdom has come near in the King himself. The right response is repentance and faith.","What does repentance look like in my life today?","Lord, I turn from my sin and believe the good news."]]},
+{p:"king",t:"The Gospel of the Kingdom",s:"Jesus' central message was the kingdom of God: God's saving reign breaking into the world.",mv:["Matthew 6:33","But seek ye first the kingdom of God, and his righteousness; and all these things shall be added unto you."],live:"Pray the Lord's Prayer slowly each day, pausing on “thy kingdom come” to name one area of your life.",
+fam:{idea:"Jesus loves children! He said the kingdom of God belongs to people who trust him like children.",q:["What did Jesus do when the children came to him?","How can you be part of God's kingdom?"],act:"Plant a few seeds in a cup. Watch them grow over the coming weeks as a reminder of the growing kingdom."},
+d:[
+["Matthew 6:9–15","Thy Kingdom Come","We pray for God's kingdom to come and his will to be done on earth as in heaven.","What would “thy will be done” look like in our home tomorrow?","Our Father, let your kingdom come and your will be done in our house."],
+["Matthew 6:25–34","Seek Ye First","Seeking the kingdom first frees us from anxiety about food and clothing.","What am I seeking first right now?","Lord, I seek your kingdom first. Provide for my family."],
+["John 3:1–8","Born Again","Nicodemus, a teacher of Israel, learned that you must be born of water and the Spirit to enter the kingdom.","Why could Nicodemus' learning not get him in?","Spirit, bring new birth to each of my children."],
+["Matthew 13:31–33","Mustard Seed and Leaven","The kingdom starts tiny and hidden, then grows and works through everything.","Where does my faithfulness feel small?","Lord, grow your kingdom from our small beginnings."],
+["Matthew 18:1–5","Become as Little Children","The greatest in the kingdom is whoever humbles himself like a little child.","What can I learn from my children about the kingdom?","Lord, give me childlike humility and trust."],
+["Mark 10:13–16","Suffer the Little Children","Jesus was much displeased when children were turned away. He took them in his arms and blessed them.","What might hinder my children from coming to Jesus?","Jesus, take my children in your arms and bless them."]]},
+{p:"king",t:"The King's Power",s:"Jesus' miracles show his royal authority over nature, demons, disease, death and sin.",mv:["Mark 4:41b","What manner of man is this, that even the wind and the sea obey him?"],live:"Pray with specific faith this week for one situation that seems impossible.",
+fam:{idea:"Jesus is a powerful King! The wind, the waves, sickness and even death obey him.",q:["What did Jesus say to the storm?","What is something scary that Jesus is bigger than?"],act:"Make a “storm” in a bowl of water with your hands, then say “Peace, be still” and let it settle. Pray about each child's fears."},
+d:[
+["Mark 4:35–41","Peace, Be Still","Jesus rebuked the wind with a word, and there was a great calm.","What storm am I facing? What does Jesus ask in verse 40?","Lord, speak peace to the storms in my life."],
+["Mark 5:1–20","Legion Defeated","A man no one could bind was freed by Jesus' word, then sent home to tell his family.","Why did Jesus send him home instead of letting him follow?","King Jesus, free anyone in bondage in my family. Let us tell what you have done."],
+["Mark 5:21–43","Talitha Cumi","Jesus heals a woman and raises a little girl. “Be not afraid, only believe.”","What did Jesus say to Jairus when all seemed lost?","Lord, I will not fear. I only believe you for my children."],
+["Luke 11:14–23","A Stronger Than He","Jesus casts out devils by the finger of God; the kingdom has come. He is the stronger man who overcomes the strong man.","Who is the strong man? Who is stronger?","Jesus, you are stronger than every enemy. Guard my house."],
+["Matthew 8:5–13","A Man Under Authority","The centurion understood authority: Jesus need only speak the word.","What did Jesus marvel at?","Lord, speak the word only. I trust your authority."],
+["Matthew 9:1–8","Power to Forgive Sins","Jesus forgives a paralysed man, then heals him to prove he has authority to forgive sins.","Which is greater, healing or forgiving?","Thank you, King Jesus, for your authority to forgive me."]]},
+{p:"king",t:"The Servant King",s:"Jesus' kingship turns the world's idea of power upside down. He rules by serving.",mv:["Zechariah 9:9","Rejoice greatly, O daughter of Zion; shout, O daughter of Jerusalem: behold, thy King cometh unto thee: he is just, and having salvation; lowly, and riding upon an ass, and upon a colt the foal of an ass."],live:"Do one hidden act of service for each family member this week.",
+fam:{idea:"Jesus is the King who serves. He rode a donkey, washed feet and gave his life. In his kingdom the greatest are those who serve.",q:["What animal did Jesus ride into Jerusalem?","How can you serve someone this week?"],act:"Parents wash the children's feet (or hands) with a towel and basin, then the children do the same for each other. Read John 13:14–15."},
+d:[
+["Zechariah 9:9–10","Lowly, Riding upon an Ass","Zion's King comes just and having salvation, humble on a donkey, speaking peace to the nations.","Why a donkey and not a war horse?","Humble King, teach me to lead with humility."],
+["Matthew 21:1–11","Hosanna to the Son of David","Jesus fulfils Zechariah. Crowds spread garments and cry “Hosanna!” (Save now!).","What did the crowds expect from this King?","Hosanna! Save us, Son of David."],
+["Matthew 20:20–28","It Shall Not Be So Among You","The mother of James and John asks for thrones. Jesus says greatness is serving, as he gives his life a ransom.","How does Jesus define greatness?","Lord, make me great in serving my wife, my children and my team."],
+["Luke 22:24–30","As He That Serveth","At the Last Supper the disciples argue about greatness. Jesus appoints them a kingdom and shows them service.","Where do I compete for position?","Jesus, free me from rivalry. Let me serve."],
+["John 13:1–17","Washing Feet","Knowing all things were in his hands, Jesus took a towel and washed his disciples' feet.","What does verse 3 reveal about why Jesus could serve so freely?","Lord, secure in your love, let me stoop to serve."],
+["Philippians 2:5–11","Wherefore God Hath Highly Exalted Him","Christ emptied himself to the cross; therefore every knee shall bow and every tongue confess him Lord.","What mind does Paul ask me to have?","Jesus, every knee will bow to you. I bow now, gladly."]]},
+{p:"king",t:"The King Crowned with Thorns",s:"At the cross the King is mocked and crowned with thorns, and truly enthroned.",mv:["John 18:36a","Jesus answered, My kingdom is not of this world:"],live:"When you are misunderstood or mocked this week, answer with the quiet dignity of Jesus.",
+fam:{idea:"The soldiers put a crown of thorns on Jesus to make fun of him, but he really is the King! He chose to suffer for us.",q:["What kind of crown did Jesus wear?","What did Jesus promise the thief?"],act:"Show a thorny branch (carefully) next to a paper gold crown. Talk about how Jesus wore the thorns so we could share his glory."},
+d:[
+["John 18:28–40","Not of This World","Before Pilate, Jesus claims a kingdom from elsewhere, built on truth, not armies.","How is Jesus' kingdom different from earthly kingdoms?","King of truth, I want to be of the truth and hear your voice."],
+["John 19:1–16","Behold Your King","Soldiers robe him in purple and crown him with thorns. The chief priests cry, “We have no king but Caesar.”","What irony is in the soldiers' mockery?","Jesus, you wore thorns for me. You are my King."],
+["Matthew 27:27–44","Himself He Cannot Save","The mockers said, “He saved others; himself he cannot save.” He stayed on the cross to save us.","Why didn't Jesus come down?","Thank you, Jesus, for not saving yourself so you could save me."],
+["John 19:17–22","The King of the Jews","Pilate's title, in Hebrew, Greek and Latin, proclaimed Jesus King to the world.","Why does it matter that it was in three languages?","Lord, be proclaimed King in every language."],
+["Luke 23:39–43","Remember Me","A dying thief sees a King on a cross and asks for his kingdom. Jesus promises paradise today.","What did the thief understand that others missed?","Jesus, remember me in your kingdom."],
+["Hebrews 2:5–9","Crowned with Glory and Honour","We see Jesus, made a little lower than the angels for the suffering of death, crowned with glory and honour.","What was the path to Jesus' crown?","Lord, help me follow the way of the cross to glory."]]},
+{p:"king",t:"The King Enthroned",s:"Risen and ascended, Jesus now reigns at the Father's right hand over all things.",mv:["Matthew 28:18b","All power is given unto me in heaven and in earth."],live:"Begin each workday this week by saying, “Jesus, you have all authority here.”",
+fam:{idea:"Jesus went up to heaven and sat down on the throne beside God the Father. He is ruling right now over everything!",q:["Where is Jesus now?","What is he doing there?"],act:"Set up a “throne” chair with a crown. Take turns reading a verse from it: Matthew 28:18, Ephesians 1:22, Philippians 2:10."},
+d:[
+["Daniel 7:9–14","One Like the Son of Man","Daniel sees one like the Son of Man come to the Ancient of days and receive an everlasting kingdom.","Which title did Jesus use most for himself? Why this one?","Son of Man, your dominion is everlasting. I serve you."],
+["Acts 1:1–11","He Was Taken Up","For forty days Jesus spoke of the kingdom, then ascended. He will return in like manner.","What were the disciples to do while waiting?","Ascended King, make me a faithful witness until you come."],
+["Ephesians 1:15–23","Far Above All","God set Christ far above all rule and authority and gave him to be head over all things to the church.","What does Paul pray the church would know?","Father, open the eyes of my heart to know your power in Christ."],
+["Hebrews 1:5–14","Thy Throne, O God, Is for Ever","The Son is higher than the angels. God says, “Sit on my right hand, until I make thine enemies thy footstool.”","Why do angels serve rather than rule?","Lord, your throne is forever. I rest under your rule."],
+["Matthew 28:18–20","All Power","Jesus claims all authority in heaven and earth and sends us out with his promise: “I am with you alway.”","How does his authority change how I approach teaching?","King Jesus, I go in your authority and rest in your presence."],
+["1 Corinthians 15:20–28","He Must Reign","Christ must reign until all enemies are under his feet. The last enemy destroyed is death.","What is the last enemy? What is the final goal (v. 28)?","Reign, Lord Jesus, until every enemy is defeated."]]},
+{p:"king",t:"The King's Law",s:"Kingdom citizens live by the King's royal law: love that keeps his commandments.",mv:["James 2:8","If ye fulfil the royal law according to the scripture, Thou shalt love thy neighbour as thyself, ye do well:"],live:"Memorise Galatians 5:22–23 as a family and pick one fruit to practise each day.",
+fam:{idea:"In Jesus' kingdom the most important rule is love: love God and love others.",q:["What are the two greatest commandments?","Which fruit of the Spirit do you want to grow in?"],act:"Make a “fruit of the Spirit” basket with nine real or paper fruits, each labelled. Each child picks one to practise and reports back."},
+d:[
+["Matthew 22:34–40","On These Two Hang All","All the law and the prophets hang on two commandments of love.","Can I truly obey the second without the first?","King Jesus, fill me with love for God and neighbour."],
+["John 14:15–24","If Ye Love Me","Love for Jesus shows itself in keeping his commandments. The Father and Son make their home with such a person.","What promise is in verse 23?","Lord, I love you. Make your home in me and in our house."],
+["Romans 13:8–10","Love Is the Fulfilling of the Law","Owe no man anything but to love one another. Love works no ill to a neighbour.","What “debt of love” do I owe my family today?","Lord, help me pay the debt of love every day."],
+["James 2:1–13","The Royal Law","Favouritism breaks the royal law. Mercy rejoices against judgment.","Where am I tempted to show favouritism?","Lord, free me from favouritism at home and at work."],
+["Galatians 5:13–26","Walk in the Spirit","Freedom is for serving one another in love. The Spirit produces fruit no law forbids.","Which fruit of the Spirit is weakest in me right now?","Holy Spirit, grow your fruit in me, especially patience and self-control."],
+["1 John 5:1–5","Not Grievous","Loving God means keeping his commandments, and our faith overcomes the world.","Why are Jesus' commands not a burden?","Lord, make obedience a joy, not a weight."]]},
+{p:"king",t:"The Shepherd-King Protects",s:"Israel's kings were meant to be shepherds. Jesus is the Good Shepherd-King who defends his flock.",mv:["John 10:11","I am the good shepherd: the good shepherd giveth his life for the sheep."],live:"Check in one-to-one with each of your children and each person you lead this week. Know your sheep by name.",
+fam:{idea:"Jesus is our Good Shepherd King. He knows each of us by name, protects us, and never lets us go.",q:["What does a shepherd do for sheep?","Can anyone snatch us out of Jesus' hand?"],act:"Children close their eyes while several people call their names. Can they pick out Dad's voice? Read John 10:27."},
+d:[
+["Psalm 23","The LORD Is My Shepherd","David the shepherd-king sings of the Shepherd who provides, guides, protects and brings home.","Which line do I need most this week?","Lord, my Shepherd, I shall not want."],
+["Ezekiel 34:1–16","Bad Shepherds, Good Shepherd","God condemns shepherds who fed themselves. He will seek, rescue, bind up and strengthen his sheep.","How does this challenge me as a leader at work and as a father?","Lord, make me a shepherd who feeds others, not myself."],
+["Ezekiel 34:17–31","My Servant David","God will set one shepherd, “my servant David,” over his flock, with a covenant of peace.","Who is this “David,” promised long after David died?","Jesus, true Son of David, shepherd us in peace."],
+["John 10:1–18","The Good Shepherd","The Good Shepherd knows his sheep, calls them by name, and lays down his life for them.","What is the difference between a shepherd and a hireling?","Good Shepherd, thank you for laying down your life for me."],
+["John 10:22–30","None Shall Pluck Them","Jesus' sheep hear his voice. No one can pluck them out of his hand or his Father's hand.","How secure is a believer, according to Jesus?","Thank you, Lord, that my family is held in your hand."],
+["Psalm 46","A Very Present Help","Though the earth be removed, God is our refuge. “Be still, and know that I am God.”","What does it mean to “be still” in my busy life?","Lord, I am still. You are God, our refuge and strength."]]},
+{p:"king",t:"Warfare Under the King",s:"Our King has won, and he equips his people to stand firm against the enemy.",mv:["James 4:7","Submit yourselves therefore to God. Resist the devil, and he will flee from you."],live:"Pray through the armour of God with your family each morning before school and work.",
+fam:{idea:"The devil is real, but Jesus is much stronger. God gives us armour so we can stand strong.",q:["Name the pieces of God's armour.","What is the sword of the Spirit?"],act:"Dress up in household “armour”: a belt, a pot-lid shield, a paper sword. Name each piece and what it means."},
+d:[
+["Ephesians 6:10–13","Be Strong in the Lord","We wrestle not against flesh and blood but against spiritual powers. Stand in the power of his might.","Who is my real enemy, and who is not?","Lord, make me strong in your might. Help me see the real battle."],
+["Ephesians 6:14–17","The Whole Armour of God","Truth, righteousness, peace, faith, salvation, and the sword of the Spirit, which is the word of God.","Which piece of armour do I most neglect?","Lord, clothe me and my family in your full armour today."],
+["James 4:1–10","Resist the Devil","Quarrels come from desires within. Submit to God, resist the devil, draw nigh to God.","James says submit first, then resist. Why that order?","Lord, I submit to you. I resist the devil in Jesus' name."],
+["1 Peter 5:6–11","Casting All Your Care","Humble yourself, cast all your care on him, be sober and vigilant. God will make you perfect, stablish and strengthen you.","What anxieties do I need to cast on him now?","Father, I cast my cares on you because you care for me."],
+["2 Corinthians 10:3–6","Every Thought Captive","Our weapons are mighty through God to pull down strongholds and bring every thought captive to Christ.","What thought pattern needs to be taken captive?","Lord, bring every thought captive to Christ my King."],
+["1 John 3:1–8; Romans 16:20","Destroying the Works of the Devil","The Son of God appeared to destroy the works of the devil. The God of peace shall bruise Satan under your feet shortly.","How does this fulfil Genesis 3:15?","Thank you, Lord, that the serpent's head is crushed."]]},
+{p:"king",t:"Citizens of the Kingdom",s:"Believers are citizens of heaven living faithfully in earthly nations.",mv:["Colossians 1:13","Who hath delivered us from the power of darkness, and hath translated us into the kingdom of his dear Son:"],live:"As a family, do one act of service for your neighbourhood this week.",
+fam:{idea:"We live in our country, but we are also citizens of God's kingdom. So we respect our leaders and show everyone God's love.",q:["Where is our real citizenship?","How can we bless our neighbours?"],act:"Walk the neighbourhood and pray for each house you pass. Leave a kind note or treat at one neighbour's door."},
+d:[
+["Colossians 1:9–14","Translated into His Kingdom","God delivered us from darkness and moved us into the kingdom of his dear Son.","What does it mean to have changed citizenship?","Father, thank you for bringing me into your Son's kingdom."],
+["Philippians 3:17–21","Our Conversation Is in Heaven","“Conversation” here means citizenship. We await a Saviour from heaven who will change our bodies by the power that subdues all things.","How should heavenly citizenship change my earthly priorities?","Lord, keep my mind on heavenly things while I serve faithfully here."],
+["Matthew 5:13–16","Ambassadors in Plain Clothes","Salt and light again, now as the King's citizens influencing the culture around us.","How can my work be salt and light?","King Jesus, make me salt and light in my workplace."],
+["Romans 13:1–7","Honour to Whom Honour","Governing authorities are ordained of God. Citizens of heaven pay taxes and give honour.","How do I speak about leaders in front of my children?","Lord, help me honour those in authority, even when I disagree."],
+["Jeremiah 29:4–7","Seek the Peace of the City","Exiles were told to build houses, raise families, and pray for the city's peace.","How can our family bless our neighbourhood?","Lord, bless our city. Let our family bring peace to it."],
+["1 Peter 2:11–17","Strangers and Pilgrims","Live honestly among unbelievers. Honour all men, love the brotherhood, fear God, honour the king.","What four commands are in verse 17?","Lord, help me honour everyone, love believers, fear you and honour leaders."]]},
+{p:"king",t:"Faithful Stewards of the King",s:"The King entrusts his servants with gifts and will return to ask for an account.",mv:["Colossians 3:23","And whatsoever ye do, do it heartily, as to the Lord, and not unto men;"],live:"Treat your work this week as service to Christ, and treat the people you lead as he treats you.",
+fam:{idea:"Jesus gives each of us gifts and wants us to use them well while he is away. One day he will come back and say, “Well done!”",q:["What did the lazy servant do with his talent?","What gifts has God given you?"],act:"Give each child a small sum or a task to “invest” this week (make something, help someone). Share the results at the next family night."},
+d:[
+["Matthew 25:14–30","The Talents","Servants who traded with their master's money were praised: “Well done… enter thou into the joy of thy lord.”","What talents has God given me? Am I burying any?","Lord, I want to hear “well done.” Help me use what you have given me."],
+["Luke 19:11–27","The Nobleman and the Pounds","A nobleman goes away to receive a kingdom and entrusts pounds to servants. His citizens say, “We will not have this man to reign over us.”","How does this parable picture Jesus' ascension and return?","Jesus, I want you to reign over me. Find me faithful."],
+["Luke 12:35–48","Let Your Loins Be Girded","Blessed are the servants the master finds watching. To whom much is given, much is required.","What has been given to me that brings greater responsibility?","Lord, I have been given much. Make me faithful with it."],
+["1 Corinthians 4:1–5","Found Faithful","It is required in stewards that a man be found faithful. The Lord will judge and reveal the counsels of hearts.","Why does Paul not care about human judgment of his work?","Lord, I want to be faithful, not famous."],
+["1 Peter 4:7–11","Stewards of Grace","Use whatever gift you have received to serve others, so that God may be glorified.","What is my main gift? How can I use it at home?","Lord, use my gifts to serve others for your glory."],
+["Colossians 3:22–4:1","A Master in Heaven","Work heartily as to the Lord. Masters treat workers justly, knowing they have a Master in heaven.","How does knowing my Master in heaven change how I lead?","Lord, I work for you. Make me a just and diligent leader."]]},
+{p:"king",t:"The Kingdom Grows",s:"The King's reign is spreading through history until the earth is full of his glory.",mv:["Habakkuk 2:14","For the earth shall be filled with the knowledge of the glory of the LORD, as the waters cover the sea."],live:"Choose one missionary or mission cause to pray for, and perhaps support, as a family.",
+fam:{idea:"Jesus' kingdom started small, like a little stone, but it is growing to fill the whole world!",q:["What happened to the little stone in the king's dream?","Where in the world is the gospel still needed?"],act:"Use a world map or globe. Put stickers where you know Christians live, and pray for one country that needs the gospel."},
+d:[
+["Daniel 2:31–45","The Stone Became a Mountain","A stone cut without hands shatters earthly empires and becomes a mountain filling the earth.","What does this vision say about the future of human kingdoms?","Lord, your kingdom will fill the earth. I put my hope there."],
+["Isaiah 2:1–5","Swords into Plowshares","Nations will flow to the LORD's mountain to learn his ways, and war will end.","What does verse 5 ask of us now?","Lord, teach us your ways and bring your peace to the nations."],
+["Acts 8:4–12","Preaching the Kingdom in Samaria","Scattered believers preached everywhere. Philip proclaimed the kingdom of God and the name of Jesus, and there was great joy.","What happened when persecution scattered the believers?","Lord, use every change in my life to spread your kingdom."],
+["Acts 28:23–31","No Man Forbidding Him","Under house arrest, Paul preached the kingdom of God with all confidence. Acts ends open-ended.","Why does Acts end without a neat conclusion?","Lord, let your word go unhindered through my life."],
+["Matthew 24:14; Revelation 11:15","The Kingdoms of This World","The gospel of the kingdom will be preached to all nations. The kingdoms of this world will become the kingdoms of our Lord.","What part can our family play in world missions?","Lord, let the gospel reach every nation. Show us our part."],
+["Habakkuk 2:14; Psalm 22:27–28","As the Waters Cover the Sea","The earth will be filled with the knowledge of God's glory. All the kindreds of the nations shall worship.","How does this promise give me hope amid bad news?","Lord, fill the earth with your glory, starting in my home."]]},
+{p:"king",t:"The King Is Coming Again",s:"The King who came humbly will return in glory to finish what he started.",mv:["Revelation 19:16","And he hath on his vesture and on his thigh a name written, KING OF KINGS, AND LORD OF LORDS."],live:"End each day this week by praying “Come, Lord Jesus,” and asking yourself whether you are ready.",
+fam:{idea:"Jesus is coming back! When he returns, everyone will see that he is King of kings, and he will make everything right.",q:["How will Jesus come back?","What should we do while we wait?"],act:"Get the house ready as if a special guest were coming. Explain that we live ready because King Jesus is coming."},
+d:[
+["1 Thessalonians 4:13–18","The Lord Himself Shall Descend","The dead in Christ rise first; we will meet the Lord and ever be with him. Comfort one another.","How does this hope change the way we grieve?","Lord, comfort us with the hope of your return."],
+["1 Thessalonians 5:1–11","Children of the Day","The day comes as a thief, but believers are children of light. Watch, be sober, and edify one another.","What does staying awake mean spiritually?","Lord, keep our family awake, sober and encouraging."],
+["Matthew 25:31–46","The Sheep and the Goats","The King on his throne separates people by how they treated “the least of these.”","How does serving the needy relate to serving the King?","King Jesus, help me see you in the least of these."],
+["2 Peter 3:8–14","Why the Delay?","The Lord is longsuffering, not willing that any should perish. Look for new heavens and a new earth, and live holy lives.","Why does God seem slow?","Lord, thank you for your patience. Save many before you come."],
+["Titus 2:11–14","That Blessed Hope","Grace teaches us to live godly lives while we look for the glorious appearing of our great God and Saviour.","What does grace teach, according to Paul?","Lord, train me by your grace while I wait for your appearing."],
+["Revelation 19:11–16","Faithful and True","Christ rides out as a righteous warrior-king with a sword from his mouth, his word: Prophet and King together.","What name is written on his vesture?","King of kings and Lord of lords, come quickly."]]},
+{p:"king",t:"The King Judges",s:"The Father has committed all judgment to the Son. Justice will be done.",mv:["2 Corinthians 5:10","For we must all appear before the judgment seat of Christ; that every one may receive the things done in his body, according to that he hath done, whether it be good or bad."],live:"Bring one hidden area of life (screen time, thoughts, finances) into the light this week.",
+fam:{idea:"Jesus is a fair judge. One day he will make everything right. If we trust in him, we don't need to be afraid.",q:["Who will judge the world?","Why don't believers need to fear judgment?"],act:"Talk about fairness in games and sports. Read Psalm 96:11–13 and let the children shout for joy that God will make everything fair."},
+d:[
+["John 5:22–29","All Judgment unto the Son","The Father has given the Son authority to judge, so that all should honour the Son.","What does verse 24 promise believers about judgment?","Lord, thank you that in you I shall not come into condemnation."],
+["Acts 17:22–31","He Hath Appointed a Day","God commands all men everywhere to repent, because he will judge the world by the man he raised from the dead.","How did Paul connect with his audience before calling them to repent?","Lord, give me wisdom to speak to unbelievers in ways they understand."],
+["Romans 2:1–16","No Respect of Persons","God's goodness leads to repentance. He will judge the secrets of men by Jesus Christ.","Am I presuming on God's kindness anywhere?","Lord, your kindness leads me to repentance."],
+["2 Corinthians 5:9–11","The Judgment Seat of Christ","We labour to be accepted of him, since all must appear before Christ's judgment seat.","What is Paul's motivation for persuading others?","Lord, let me live to please you above everyone."],
+["Revelation 20:11–15","The Great White Throne","The dead are judged by their works. Whoever is not found in the book of life is cast out.","How do I know my name is in the book of life?","Lord, write my children's names in your book of life."],
+["Psalm 96","He Cometh to Judge the Earth","Creation rejoices because the LORD comes to judge the world with righteousness. Judgment is good news for the oppressed.","Why is God's judgment a reason for joy?","Righteous King, come and set all things right."]]},
+{p:"king",t:"We Shall Reign with Him",s:"Christ shares his reign with his people, in part now and fully in the age to come.",mv:["Luke 12:32","Fear not, little flock; for it is your Father's good pleasure to give you the kingdom."],live:"Speak with hope about the future to your children this week, especially if they are anxious.",
+fam:{idea:"God's family will reign with Jesus in the new creation. That is our amazing future!",q:["What will we see in the new creation (Rev 22:4)?","What is your favourite thing about heaven?"],act:"Draw the new creation from Revelation 22: the river, the tree, the light, God's throne. Display it at home."},
+d:[
+["Luke 12:22–32","The Father's Good Pleasure","Fear not, little flock: it is the Father's good pleasure to give you the kingdom.","How does God's delight in giving change my anxiety?","Father, thank you for gladly giving us your kingdom."],
+["Romans 5:12–21","Reign in Life","Through Adam death reigned. Through Christ, those who receive grace reign in life.","What does it mean to “reign in life” now?","Lord, let grace reign in me, not sin."],
+["2 Timothy 2:8–13","If We Suffer, We Shall Reign","Paul suffers for the gospel, trusting that if we endure we will reign with Christ, who abides faithful.","What am I enduring that has eternal significance?","Lord, help me endure faithfully. You remain faithful."],
+["Revelation 3:14–22","Sit with Me in My Throne","To lukewarm Laodicea, Jesus knocks at the door and promises the overcomer a seat on his throne.","Where am I lukewarm?","Jesus, I open the door. Make me zealous for you."],
+["Revelation 20:1–6","Priests of God, Reigning","Those who belong to Christ are priests of God and of Christ and reign with him.","Notice the offices combined in verse 6.","Lord, thank you for making us priests who will reign with you."],
+["Revelation 22:1–5","They Shall Reign for Ever","The river of life, the tree of life, God's face seen, his name on foreheads, and his servants reign forever.","Which part of this picture moves me most?","Lord, I long to see your face. Keep us until that day."]]},
+{p:"king",t:"The Kingdom at Home",s:"Under King Jesus, a father leads his home with loving, servant authority. This closes the King unit.",mv:["Psalm 101:2b","I will walk within my house with a perfect heart."],live:"Spend one-to-one time with each child and with your wife this week, asking how you can serve them.",
+fam:{ref:"Review: Ps 2; Matt 28:18; Phil 2:9–11; Rev 19:16",idea:"UNIT REVIEW — Christ the King: Jesus is the Son of David who rules with love and power. He defeated the enemy at the cross, reigns now in heaven, and will come again. We serve him gladly.",q:["Why is Jesus a better king than David?","Where is Jesus ruling right now?","How do we show that Jesus is our King?"],act:"Teach-back night. Give a 10-minute summary of the King unit. Crown everyone with paper crowns, then all take them off and lay them before a cross (Rev 4:10)."},
+d:[
+["Ephesians 5:21–33","As Christ Loved the Church","Husbands love their wives as Christ loved the church and gave himself for it.","How can I lay down my life for my wife this week?","Lord, help me love my wife as you love the church."],
+["Ephesians 6:1–4","Provoke Not Your Children","Children obey. Fathers do not provoke their children to wrath but bring them up in the nurture and admonition of the Lord.","What provokes my children? What nurtures them?","Lord, make me a father who instructs without provoking."],
+["Colossians 3:18–21","Lest They Be Discouraged","Fathers must not provoke their children, “lest they be discouraged.”","Which of my children needs extra encouragement?","Lord, show me how to encourage each child today."],
+["1 Timothy 3:1–5","Ruling His Own House Well","A church leader must manage his own household well, with gravity.","Why does leadership at home prepare for leadership elsewhere?","Lord, make me faithful at home first."],
+["Psalm 101","A King's Resolve","David resolves to walk with integrity in his house and set no wicked thing before his eyes.","What worthless things should I remove from my home?","Lord, I will walk within my house with a perfect heart."],
+["Proverbs 4:1–13","A Father's Instruction","A father passes on the wisdom he received: get wisdom, take fast hold of instruction.","What wisdom from my father (or others) do I want to pass on?","Lord, give me wisdom to pass on to my children."]]},
+{p:"whole",t:"A Priest upon His Throne",s:"The prophets foresaw one person uniting offices that Israel always kept separate.",mv:["Zechariah 6:13b","and he shall bear the glory, and shall sit and rule upon his throne; and he shall be a priest upon his throne:"],live:"Explain to your wife or a friend, in five minutes, how Jesus unites all three offices.",
+fam:{idea:"In the Old Testament, kings and priests were different people. Jesus is both, and a prophet too!",q:["What happened when King Uzziah tried to act as a priest?","Why can Jesus be both King and Priest?"],act:"Bring back the three props from Week 1 (scroll, robe, crown). Put all three on one person to show that Jesus holds all three."},
+d:[
+["Zechariah 3:1–10","Joshua the High Priest","The high priest's filthy garments are replaced, and God promises “my servant the BRANCH” and the removal of iniquity in one day.","How does this picture being made right with God?","Lord, remove my filthy garments and clothe me in Christ."],
+["Zechariah 6:9–15","A Priest upon His Throne","A crown is set on the high priest's head. The Branch will build the temple, rule on his throne, and be a priest on his throne.","Why was this crowning so unusual in Israel?","Jesus, Priest and King, rule me and pray for me."],
+["Jeremiah 33:14–22","David and the Levites","God promises that David will never lack a king, nor the Levites a priest. Both are fulfilled together in Christ.","How does Christ fulfil both halves of this promise?","Faithful God, thank you for keeping every promise in Jesus."],
+["Psalm 110","King and Priest for Ever","Reread Psalm 110 with fresh eyes after the Priest and King units.","What do I notice now that I missed in March?","Lord, thank you for growing my understanding this year."],
+["Isaiah 61:1–11","The Anointed One's Mission","The Anointed preaches good tidings (Prophet), makes his people “the Priests of the LORD” (v. 6), and gives beauty for ashes, a royal crown (King).","Find all three offices in this chapter.","Anointed One, fulfil your mission in my family."],
+["Revelation 1:9–20","The Glorified Christ","John sees Christ in a priest's long robe, with a sword from his mouth, holding the stars: Priest, Prophet and King.","Match each detail to an office.","Lord Jesus, I fall at your feet. You are the first and the last."]]},
+{p:"whole",t:"The Three Offices at the Cross",s:"Even while dying, Jesus acts as Prophet, Priest and King.",mv:["Luke 23:34a","Then said Jesus, Father, forgive them; for they know not what they do."],live:"Choose to forgive someone completely this week, and pray for them by name.",
+fam:{idea:"Even on the cross, Jesus was our Prophet (he told the truth), our Priest (he prayed for his enemies) and our King (he promised the thief paradise).",q:["What did Jesus pray for the soldiers?","What did he promise the thief?"],act:"Make a three-part poster, “Jesus spoke / Jesus prayed / Jesus promised,” with his words from the cross under each."},
+d:[
+["Luke 23:26–31","The Prophet's Warning","On the road to the cross, Jesus warns the daughters of Jerusalem of judgment to come.","Why, while suffering, does Jesus still speak warning?","Lord, give me your compassion to speak truth even when it costs me."],
+["Luke 23:32–38","The Priest's Prayer","“Father, forgive them; for they know not what they do.” Jesus intercedes for his executioners.","Whom do I need to forgive?","Father, forgive them. Give me grace to forgive as Jesus did."],
+["Luke 23:39–43","The King's Pardon","Jesus grants paradise to a dying thief, a royal pardon.","What does this show about the reach of grace?","King Jesus, thank you that no one is beyond your grace."],
+["John 19:23–30","That the Scripture Might Be Fulfilled","Even the dividing of his garments and his thirst fulfil scripture. He cares for his mother, then finishes the work.","How does Jesus care for his family from the cross?","Lord, even under pressure, make me care for my family."],
+["Mark 15:33–39","Truly This Man Was the Son of God","Darkness, the cry of Psalm 22, the torn veil, and a centurion's confession.","Why did Jesus quote Psalm 22?","Jesus, you were forsaken so I would never be."],
+["Isaiah 53:10–12","He Shall See His Seed","The servant bears sin (Priest), justifies many by his knowledge (Prophet), and divides the spoil with the strong (King).","Find all three offices here.","Lord, thank you that you see us, your offspring, and are satisfied."]]},
+{p:"whole",t:"The Three Offices in Daily Life",s:"Every day I need Christ as Prophet to teach me, as Priest to cleanse me, and as King to rule me.",mv:["Psalm 119:105","Thy word is a lamp unto my feet, and a light unto my path."],live:"Use a simple daily check. Prophet: what did I hear? Priest: what did I confess? King: where did I obey?",
+fam:{idea:"Every day we need Jesus to teach us, forgive us and lead us.",q:["What do we need from Jesus as Prophet? As Priest? As King?","What is one way you obeyed Jesus today?"],act:"Create a bedtime card with three questions: What did Jesus teach me today? What do I need to say sorry for? How did I follow him?"},
+d:[
+["Psalm 119:9–16","Hid in Mine Heart","How shall a young man cleanse his way? By taking heed according to God's word.","How can I help my children hide God's word in their hearts?","Prophet Jesus, let your word dwell in me and my children."],
+["Psalm 119:97–105","A Lamp unto My Feet","Meditating on God's word all the day makes us wiser than our teachers.","What would all-day meditation look like for me?","Lord, your word is a lamp to my feet. Light my path."],
+["1 John 1:5–2:2","Walking in the Light","If we confess our sins, he is faithful and just to forgive. We have an advocate with the Father.","Is there sin I have not confessed?","Priest Jesus, I confess my sins. Thank you for your cleansing blood."],
+["Romans 6:12–23","Let Not Sin Reign","Do not let sin reign in your mortal body. Yield yourselves to God as instruments of righteousness.","Which master am I serving in my habits?","King Jesus, reign in my body and my habits."],
+["Micah 6:6–8","Do Justly, Love Mercy, Walk Humbly","God does not want empty sacrifices, but justice, mercy and humility.","Which of the three is hardest for me?","Lord, teach me to do justly, love mercy and walk humbly with you."],
+["Luke 10:38–42","One Thing Is Needful","Mary sat at Jesus' feet listening. Martha was distracted with much serving.","Am I more Mary or Martha in this season?","Lord, help me choose the good part: sitting at your feet."]]},
+{p:"whole",t:"Anointed Too: Prophets, Priests and Kings in Christ",s:"Joined to the Anointed One, every believer shares his anointing and his three-fold calling.",mv:["2 Corinthians 1:21","Now he which stablisheth us with you in Christ, and hath anointed us, is God;"],live:"Each day, name one way you acted as prophet (spoke God's truth), priest (prayed or served) and king (governed yourself or led well).",
+fam:{idea:"Because we belong to Jesus the Anointed One, we are Christians: “Christ's people.” We can speak for God, pray for others, and lead the way in doing right.",q:["What does the word “Christian” have to do with “Christ”?","How can a child be a prophet, a priest or a king this week?"],act:"Put a drop of oil on each family member's forehead and pray: “Lord, make [name] a faithful prophet, priest and king for Jesus.”"},
+d:[
+["Numbers 11:24–29","Would God All Were Prophets","Moses longed for all the LORD's people to receive the Spirit and prophesy.","What was Moses' attitude toward others sharing the Spirit?","Lord, pour your Spirit on all your people, including my children."],
+["Joel 2:28–32","Your Sons and Daughters Shall Prophesy","God promises his Spirit on all flesh: young and old, men and women.","What does this mean for my children's place in God's work?","Lord, let my sons and daughters speak of you."],
+["1 Peter 2:1–10","Lively Stones","We are living stones, a holy priesthood and a royal people.","Which of these identities do I live out least?","Lord, help me live as a royal priest today."],
+["2 Corinthians 1:18–22","He Hath Anointed Us","God has anointed us, sealed us, and given the Spirit as an earnest. All his promises are yea in Christ.","What does it mean that I am anointed?","Father, thank you for anointing and sealing me with your Spirit."],
+["1 John 2:20–27","An Unction from the Holy One","The anointing from the Holy One teaches believers and helps them abide in Christ.","How does the Spirit teach me as I study?","Holy Spirit, teach me and help me abide."],
+["Revelation 5:9–10; 1:5–6","Kings and Priests","The redeemed from every nation are made kings and priests who reign.","How does our family reflect this now?","Worthy Lamb, make our family a kingdom of priests for you."]]},
+{p:"whole",t:"Thanksgiving",s:"Gratitude is the natural response to all Christ has done as Prophet, Priest and King.",mv:["Psalm 100:4","Enter into his gates with thanksgiving, and into his courts with praise: be thankful unto him, and bless his name."],live:"At Thanksgiving dinner, lead your family in reading Psalm 136 responsively, adding your own lines.",
+fam:{idea:"Jesus has given us so much. We thank God for teaching us, forgiving us and leading us.",q:["How many of the ten lepers said thank you?","What are three things you thank Jesus for?"],act:"Make a thankful tree with three colours of paper leaves: blue for what Jesus taught us, red for what he forgave, purple for how he led us."},
+d:[
+["Psalm 100","Enter His Gates","Know that the LORD is God. We are his people and the sheep of his pasture.","What reasons for thanks does the psalm give?","Lord, I enter your gates with thanksgiving."],
+["Psalm 103:1–14","Forget Not All His Benefits","He forgives, heals, redeems, crowns and satisfies. Like as a father pitieth his children, so the LORD pities those who fear him.","List the benefits in vv. 3–5.","Bless the Lord, O my soul, for every benefit."],
+["Luke 17:11–19","Where Are the Nine?","Ten were cleansed; one came back to give thanks and was made whole.","When have I received without returning thanks?","Lord, make me the one who returns to thank you."],
+["Colossians 3:12–17","Be Ye Thankful","Put on compassion, forgive, let peace rule, and do everything in Jesus' name, giving thanks.","How many times does this passage mention thanks?","Lord, let thankfulness mark our home."],
+["Psalm 136","His Mercy Endureth for Ever (Thanksgiving Day)","Every line of God's history with Israel is answered with “for his mercy endureth for ever.”","Write my own family's history with this refrain.","Thank you, Lord. Your mercy endures forever."],
+["1 Thessalonians 5:16–24","In Every Thing Give Thanks","Rejoice evermore, pray without ceasing, in every thing give thanks. God will sanctify you wholly.","What hard circumstance can I give thanks in?","Faithful God, I give thanks even in hard things."]]},
+{p:"whole",t:"Advent: The Promise of the Anointed",s:"Isaiah's Servant songs and Malachi point to the coming one who would be Prophet, Priest and King.",mv:["Isaiah 40:8","The grass withereth, the flower fadeth: but the word of our God shall stand for ever."],live:"Tell each child one specific thing you appreciate about them this week.",
+fam:{idea:"The Old Testament ends with a promise that God would turn fathers' hearts to their children. God keeps his promises in Jesus!",q:["What is the last promise of the Old Testament?","What is Advent about?"],act:"Start an Advent calendar with a daily verse. Light the first candle and read Isaiah 40:1–11."},
+d:[
+["Isaiah 40:1–11","Comfort Ye My People","A voice cries in the wilderness. God's word stands forever. He comes with strength and feeds his flock like a shepherd.","Find the prophet, the king and the shepherd in this chapter.","Lord, comfort your people. Your word stands forever."],
+["Isaiah 42:1–9","Behold My Servant","The Servant brings justice gently: a bruised reed shall he not break.","How does the Servant treat the weak?","Lord, be gentle with my bruised places, and make me gentle with my children."],
+["Isaiah 49:1–7","A Light to the Gentiles","The Servant's mouth is like a sharp sword. He will be a light to the nations, and kings will bow.","Which offices do you see here?","Lord, let your salvation reach the ends of the earth."],
+["Isaiah 50:4–9","The Tongue of the Learned","The Servant is wakened morning by morning to hear, so he can speak a word in season to the weary.","How is this a model for my daily 30 minutes?","Lord, waken my ear each morning so I can speak a word to the weary."],
+["Malachi 3:1–4","The Refiner","The Lord will suddenly come to his temple and purify the sons of Levi so their offerings please him.","What has refining looked like in my life this year?","Lord, refine me and make my worship pleasing."],
+["Malachi 4:1–6","The Heart of the Fathers","The Old Testament ends with a promise: the hearts of the fathers turned to the children, and the children to the fathers.","How has this year turned my heart toward my children?","Lord, turn my heart to my children and theirs to me."]]},
+{p:"whole",t:"Advent: Preparing to Teach",s:"Ezra studied, obeyed, then taught. This week is about teaching God's word faithfully.",mv:["Ezra 7:10","For Ezra had prepared his heart to seek the law of the LORD, and to do it, and to teach in Israel statutes and judgments."],live:"Plan your family's Bible reading for 2028: which book will you read together next?",
+fam:{idea:"God wants every family to learn his word and teach it to others. You can tell your friends about Jesus too!",q:["What three things did Ezra do?","Who could you tell about Jesus?"],act:"Let each child prepare and “teach” a two-minute Bible story to the family. Praise their effort."},
+d:[
+["Ezra 7:6–10","Seek, Do, Teach","Ezra prepared his heart to seek the law, to do it, and to teach it, in that order.","Have I followed this order this year?","Lord, keep my heart set on studying, doing and teaching your word."],
+["Nehemiah 8:1–12","Gave the Sense","Ezra read the law distinctly, and the Levites gave the sense so people understood. They wept, then rejoiced.","What made the teaching effective?","Lord, help me explain your word clearly so my family understands."],
+["Deuteronomy 11:18–21","Upon the Door Posts","Lay up God's words in your heart, teach them to your children, and write them on your doorposts.","Where in our house could we display scripture?","Lord, surround our home with your word."],
+["2 Timothy 2:1–2, 14–15","Rightly Dividing","Commit what you have learned to faithful men who can teach others. Handle the word of truth rightly.","Who could I teach, who could then teach others?","Lord, make me a workman who rightly divides your word."],
+["Luke 24:25–27, 44–45","Beginning at Moses","Jesus taught from all the scriptures the things concerning himself. The whole Bible points to Christ.","How have I seen Christ in Moses, the Prophets and the Psalms this year?","Lord Jesus, keep opening the scriptures about yourself to me."],
+["Acts 8:26–40","Understandest Thou?","Philip asked a good question, sat beside the man, began at the scripture he was reading, and preached Jesus.","What teaching method did Philip use?","Lord, give me good questions and patience as I teach."]]},
+{p:"whole",t:"Advent: Why He Came",s:"The Son took flesh so he could speak as Prophet, die as Priest, and reign as King.",mv:["Galatians 4:4–5","But when the fulness of the time was come, God sent forth his Son, made of a woman, made under the law, To redeem them that were under the law, that we might receive the adoption of sons."],live:"Choose one Christmas tradition that clearly points to Jesus, and explain its meaning to the family.",
+fam:{idea:"Jesus came to earth as a baby so he could teach us, die for us and rule over us forever.",q:["Why did Jesus need a human body?","What does the name Jesus mean?"],act:"Wrap three small gifts labelled Prophet, Priest and King. Open them tonight: a Bible, a small cross and a crown."},
+d:[
+["Luke 3:1–18","Prepare Ye the Way","John calls people to repentance that bears fruit and points to one mightier who baptises with the Holy Ghost.","What fruits of repentance did John require (vv. 10–14)?","Lord, prepare my heart for you this Christmas."],
+["John 3:22–36","He Must Increase","John rejoices as the bridegroom's friend: “He must increase, but I must decrease.”","Where do I need to decrease so Christ increases?","Jesus, you must increase and I must decrease."],
+["Matthew 1:21–23; Isaiah 7:14","Jesus and Emmanuel","His name Jesus means “the LORD saves.” He is Emmanuel, God with us.","How do these two names sum up why he came?","Jesus, save us. Emmanuel, be with us."],
+["Galatians 4:4–7","The Fulness of the Time","God sent his Son, made of a woman, made under the law, to redeem us and adopt us as sons.","What does adoption give us?","Abba, Father, thank you for adopting me."],
+["Hebrews 10:5–10","A Body Hast Thou Prepared Me","The Son came into the world saying, “A body hast thou prepared me… Lo, I come to do thy will.” Christmas was for the cross.","Why did the Son need a body?","Jesus, thank you for taking a body to offer for me."],
+["Revelation 12:1–12","Christmas from Heaven's View","The dragon seeks to devour the child, but the child is caught up to God's throne and the accuser is cast down.","How does this vision show Christmas as a battle?","Lord, thank you that the child is King and the accuser is defeated."]]},
+{p:"whole",t:"Christmas: Prophet, Priest and King Is Born",s:"The Christmas story itself reveals all three offices.",mv:["Isaiah 9:6","For unto us a child is born, unto us a son is given: and the government shall be upon his shoulder: and his name shall be called Wonderful, Counsellor, The mighty God, The everlasting Father, The Prince of Peace."],live:"On Christmas Eve, read Luke 2 aloud yourself. You are ready to teach it with confidence.",
+fam:{ref:"Luke 2:15–20; John 1:14",idea:"Merry Christmas! The baby in the manger is our Prophet who tells us about God, our Priest who saves us from sin, and our King who reigns forever.",q:["What did the shepherds do after they saw Jesus?","Which of Jesus' three jobs are you most thankful for?"],act:"Before opening gifts, each person tells one thing they learned about Jesus this year. Pray together, thanking God for the greatest gift."},
+d:[
+["Isaiah 9:2–7","The Government upon His Shoulder","The child born to us bears the government and is called Wonderful Counsellor and Prince of Peace.","Which name of Jesus speaks most to me this Christmas?","Wonderful Counsellor, mighty God, everlasting Father, Prince of Peace, reign in us."],
+["Matthew 2:1–12","Gold, Frankincense and Myrrh","Christians have long read the gifts as pointers to who he is: gold for a king, frankincense (burned in priestly worship) for God, myrrh for his burial.","How do the gifts point to his offices?","Lord, I bring you the gift of my whole self."],
+["Luke 2:21–24","Presented in the Temple","Jesus is presented to the Lord, and his parents offer two birds, the offering of the poor (Lev 12:8). The great High Priest enters the temple as a baby.","What does the offering reveal about Jesus' family?","Lord, thank you for becoming poor so I could become rich."],
+["Luke 2:25–38","Simeon and Anna","Simeon sees salvation and a light to lighten the Gentiles. Anna the prophetess speaks of him to all who waited for redemption.","What did Simeon warn Mary about?","Lord, like Simeon and Anna, keep me waiting, watching and speaking of you."],
+["Luke 2:41–52","About My Father's Business","At twelve Jesus sits among the teachers, hearing and asking, then goes home and is subject to his parents.","What does this show about Jesus as learner and teacher?","Jesus, grow my children in wisdom and stature, and in favour with God and man."],
+["Luke 2:1–14","Glory to God in the Highest (Christmas Eve)","The Saviour is born. Heaven announces peace on earth and good will toward men.","What does “on earth peace” mean for our family tonight?","Glory to God in the highest, and peace in our home."]]},
+{p:"whole",t:"Full Circle",s:"End where you began, with deeper understanding, and get ready to keep going.",mv:["Hebrews 13:8","Jesus Christ the same yesterday, and to day, and for ever."],live:"Write a one-page “What I believe about Christ” statement to keep for your children.",
+fam:{ref:"Joshua 24:14–15; Deuteronomy 6:4–9",idea:"CAPSTONE — Jesus Christ is our Prophet, Priest and King, yesterday, today and forever. Our family will keep listening to him, drawing near to him and following him.",q:["What does “Christ” mean?","Tell one thing about Jesus as Prophet, as Priest and as King.","What will our family do next year to keep growing?"],act:"Family covenant night. Open the New Year jar from last January (Week 14). Read Joshua 24:15 and sign a simple family commitment together. Speak the Numbers 6 blessing over everyone."},
+d:[
+["Luke 4:16–21","This Day Is This Scripture Fulfilled","Read again the passage from Week 1, and notice how much more you see now.","Write three things I understand now that I did not in September 2026.","Thank you, Lord, for teaching me this year. I am amazed at your Son."],
+["Hebrews 1:1–4","Spoken, Purged, Seated","Reread the one-sentence summary of all three offices, then try explaining it without notes.","Can I explain each phrase to my family?","Lord, give me confidence to explain your Son clearly."],
+["Revelation 1:4–8","Alpha and Omega","Christ is the faithful witness, the one who washed us from our sins, and the prince of the kings of the earth, who is, and was, and is to come.","How has my view of Jesus grown this year?","Glory and dominion to you, Lord Jesus, forever."],
+["Colossians 1:15–23","The Preeminence","Christ is creator, head of the church and reconciler, that in all things he might have the preeminence.","Where does Jesus still need first place in my life?","Lord, have first place in my life and home in the new year."],
+["Philippians 1:3–11","He Which Hath Begun a Good Work","God will finish what he started. Paul prays that love may abound in knowledge and judgment.","What good work has God begun in my family?","Lord, complete the good work you started in us."]]}
+];
+
+(function(){
+const PARTS={found:"Foundations",prophet:"Christ the Prophet",priest:"Christ the Priest",king:"Christ the King",whole:"All Three Together"};
+const START=new Date(2026,8,27), END=new Date(2027,11,31);
+const days=[];
+W.forEach((w,wi)=>{const n=w.d.length;for(let i=0;i<=n;i++){const dt=new Date(2026,8,27+wi*7+i);if(dt>END)break;days.push({wi,i,dt,fam:i===n});}});
+const key=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+let done=new Set();
+try{done=new Set(JSON.parse(localStorage.getItem("ppk-done")||"[]"));}catch(e){}
+const save=()=>{try{localStorage.setItem("ppk-done",JSON.stringify([...done]));}catch(e){}};
+const fmt=(d,o)=>d.toLocaleDateString("en-US",o);
+const short=d=>fmt(d,{month:"short",day:"numeric"});
+function todayIdx(){const t=new Date();t.setHours(0,0,0,0);const n=Math.round((t-START)/864e5);return Math.max(0,Math.min(days.length-1,n));}
+const TODAY=todayIdx();
+let sel=TODAY;
+const $=id=>document.getElementById(id);
+
+// legend with computed ranges
+const ranges={};W.forEach((w,wi)=>{(ranges[w.p]=ranges[w.p]||[]).push(wi);});
+$("legend").innerHTML=Object.keys(PARTS).map(p=>{const ws=ranges[p];const a=days.find(d=>d.wi===ws[0]).dt;const lastW=ws[ws.length-1];const b=[...days].reverse().find(d=>d.wi===lastW).dt;
+return `<button data-part="${p}" data-w="${ws[0]}"><i></i><span><b>${PARTS[p]}</b> · ${short(a)}${a.getFullYear()!==b.getFullYear()?", "+a.getFullYear():""} – ${short(b)}, ${b.getFullYear()} · wks ${ws[0]+1}–${lastW+1}</span></button>`;}).join("");
+$("legend").onclick=e=>{const b=e.target.closest("button");if(!b)return;const wi=+b.dataset.w;go(days.findIndex(d=>d.wi===wi));};
+
+function strip(){const tw=days[TODAY].wi,sw=days[sel].wi;
+$("strip").innerHTML=W.map((w,wi)=>`<button class="seg${wi<tw?" past":""}${wi===tw?" now":""}${wi===sw?" sel":""}" data-part="${w.p}" data-w="${wi}" title="Week ${wi+1}: ${w.t}" aria-label="Week ${wi+1}: ${w.t}"></button>`).join("");}
+$("strip").onclick=e=>{const b=e.target.closest(".seg");if(!b)return;const wi=+b.dataset.w;const idx=days.findIndex(d=>d.wi===wi);go(wi===days[TODAY].wi?TODAY:idx);};
+
+function day(){const d=days[sel],w=W[d.wi];const card=$("day");card.dataset.part=w.p;
+const isToday=sel===TODAY;const k=key(d.dt);const isDone=done.has(k);
+let body;
+if(!d.fam){const [ref,title,note,ask,pray]=w.d[d.i];
+body=`<div class="passage"><div class="eyebrow">Read</div><div class="ref">${ref}</div><div class="dtitle">${title}</div></div>
+<div class="block"><div class="eyebrow">Key insight</div><p>${note}</p></div>
+<div class="block"><div class="eyebrow">Study question · write your answer</div><p>${ask}</p></div>
+<div class="block pray"><div class="eyebrow">Prayer point</div><p>${pray}</p></div>`;}
+else{const f=w.fam;
+body=`<div class="passage"><div class="eyebrow">Family night · teach it</div><div class="ref">${f.ref||"Review this week's passages"}</div><div class="dtitle">${w.t}</div></div>
+<div class="block"><div class="eyebrow">The big idea</div><p>${f.idea}</p></div>
+<div class="block"><div class="eyebrow">Ask your children</div><ul>${f.q.map(q=>`<li>${q}</li>`).join("")}</ul></div>
+<div class="block"><div class="eyebrow">Activity</div><p>${f.act}</p></div>
+<div class="block pray"><div class="eyebrow">Pray together</div><p>Thank God for what you learned this week. Let each child pray one sentence. Then speak the blessing over each one: “The LORD bless thee, and keep thee…”</p></div>`;}
+card.innerHTML=`<div class="dhead"><div class="dmeta"><span class="ddate">${fmt(d.dt,{weekday:"long",month:"long",day:"numeric",year:"numeric"})}${isToday?" · Today":""}</span>
+<span class="dsub"><b>${PARTS[w.p]}</b> · Week ${d.wi+1} of 66 · ${d.fam?"Family night":"Day "+(d.i+1)+" of 6"}</span></div>
+<div class="nav"><button id="prev" aria-label="Previous day"${sel===0?" disabled":""}>‹ Prev</button><button class="today" id="tod">Today</button><button id="next" aria-label="Next day"${sel===days.length-1?" disabled":""}>Next ›</button></div></div>
+<div class="dbody">${body}</div>
+<div class="wfoot"><div class="block"><div class="eyebrow">Memory verse this week</div><p class="mv">${w.mv[1]}</p><div class="mvref">${w.mv[0]} (KJV)</div></div>
+<div class="block"><div class="eyebrow">Practicalise this week</div><p>${w.live}</p></div></div>
+<button class="done${isDone?" on":""}" id="done" aria-pressed="${isDone}">${isDone?"✓ Completed":"Mark this session complete"}</button>`;
+$("prev").onclick=()=>go(sel-1);$("next").onclick=()=>go(sel+1);$("tod").onclick=()=>go(TODAY);
+$("done").onclick=()=>{done.has(k)?done.delete(k):done.add(k);save();render();};}
+
+function side(){const d=days[sel],w=W[d.wi];
+$("rhythm").dataset.part=w.p;$("weekpanel").dataset.part=w.p;
+const steps=d.fam?[["0–3","Sing or pray","Settle everyone in."],["3–6","Memory verse","Say it together."],["6–11","Read","One passage, aloud."],["11–13","Big idea","One sentence, twice."],["13–17","Ask","Children answer first."],["17–23","Do","The activity."],["23–25","Bless","Numbers 6 over each child."]]
+:[["0–3","Be still and pray","“Open thou mine eyes” (Ps 119:18)."],["3–13","Read slowly, twice","Aloud the second time."],["13–21","Study","Read the insight, then journal your answer."],["21–25","Practicalise","Write one concrete action for today."],["25–30","Pray","Use the prayer point, then recite the memory verse."]];
+$("rhythm").innerHTML=`<div class="eyebrow">${d.fam?"Tonight's 25 minutes":"Your 30 minutes"}</div><ol class="rhythm">${steps.map(s=>`<li><span class="t">${s[0]}</span><div><b>${s[1]}</b><span>${s[2]}</span></div></li>`).join("")}</ol>`;
+const wd=days.map((x,ix)=>[x,ix]).filter(([x])=>x.wi===d.wi);
+$("weekpanel").innerHTML=`<div class="eyebrow">Week ${d.wi+1}</div><h3>${w.t}</h3><p class="sum">${w.s}</p><ul class="week">${wd.map(([x,ix])=>`<li><button data-i="${ix}" class="${ix===sel?"cur":""}"><span class="wd">${fmt(x.dt,{weekday:"short"})} ${short(x.dt)}</span><span class="${x.fam?"fn":""}">${x.fam?"Family night":w.d[x.i][0]}</span><span class="ck">${done.has(key(x.dt))?"✓":""}</span></button></li>`).join("")}</ul>`;}
+$("weekpanel").onclick=e=>{const b=e.target.closest("button[data-i]");if(b)go(+b.dataset.i);};
+
+function render(){day();side();strip();$("progress").textContent=`${done.size} of ${days.length} sessions complete`;}
+function go(i){sel=Math.max(0,Math.min(days.length-1,i));render();}
+document.addEventListener("keydown",e=>{if(e.target.closest("input,textarea"))return;if(e.key==="ArrowLeft")go(sel-1);if(e.key==="ArrowRight")go(sel+1);});
+render();
+})();
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}
+</script>
+</body>
+</html>
